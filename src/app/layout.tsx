@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Cairo } from "next/font/google";
 import { QueryProvider } from "@/providers/query-provider";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const cairo = Cairo({
@@ -24,6 +25,7 @@ export default function RootLayout({
     <html lang="ar" dir="rtl" className={`${cairo.variable}`}>
       <body className="min-h-screen bg-background font-cairo antialiased">
         <QueryProvider>{children}</QueryProvider>
+        <Analytics />
       </body>
     </html>
   );
