@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
+import Image from "next/image";
 import { Loader2, Package, User, Phone, MapPin, AlertCircle, Tag, ShoppingCart, Users, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import Header from "@/components/Header";
@@ -12,6 +13,7 @@ import { useActiveCarton } from "@/hooks/use-carton";
 import { useCreateOrder } from "@/hooks/use-create-order";
 import { useCustomerDashboard } from "@/hooks/use-customer";
 import { VILLAGES } from "@/lib/constants";
+import { isTrustedImageUrl } from "@/lib/image-utils";
 
 export default function ProductPage() {
   const params = useParams();
@@ -63,15 +65,10 @@ export default function ProductPage() {
         referralCode: formData.referralCode || null,
       });
 
-      const successParams = new URLSearchParams({
-        product: product.name,
-        productId: product.id,
-        carton: String(result.cartonNumber),
-        price: String(result.finalPrice),
-        ref: result.personalReferralCode,
-        name: formData.customerFullName,
-      });
-      router.push(`/order-success?${successParams.toString()}`);
+      // Pass ONLY the orderId — success page fetches real data from the API.
+      // Never embed financial data (price, carton number) in URL params; an
+      // attacker can craft them to display false order confirmations (phishing).
+      router.push(`/order-success?orderId=${result.orderId}`);
     } catch (error) {
       console.error("Order failed:", error);
     }
@@ -123,8 +120,15 @@ export default function ProductPage() {
               </div>
               
               <div className="aspect-square bg-gray-50 rounded-2xl mb-6 flex items-center justify-center mt-4 overflow-hidden relative">
-                {product.imageUrl ? (
-                  <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover" />
+                {isTrustedImageUrl(product.imageUrl) ? (
+                  <Image
+                    src={product.imageUrl!}
+                    alt={product.name}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-cover"
+                    priority
+                  />
                 ) : (
                   <Package className="w-32 h-32 text-gray-300" />
                 )}

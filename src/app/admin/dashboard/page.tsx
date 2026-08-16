@@ -103,27 +103,22 @@ export default function AdminDashboardPage() {
   const [editingCartonId, setEditingCartonId] = useState<string | null>(null);
   const [editingCounterValue, setEditingCounterValue] = useState<number>(0);
 
-  const [isMounted, setIsMounted] = useState(false);
-
+  /**
+   * SECONDARY auth guard — middleware.ts is the PRIMARY guard and blocks
+   * unauthenticated requests before this component ever renders.
+   * This useEffect handles the case where the in-memory token is lost after
+   * a page refresh (in-memory tokens don't survive reloads by design).
+   */
   useEffect(() => {
-    setIsMounted(true);
     if (!getAdminToken()) {
       router.replace("/admin/login");
     }
   }, [router]);
 
   const handleLogout = () => {
-    removeAdminToken();
+    removeAdminToken(); // clears in-memory token + session cookie
     router.replace("/admin/login");
   };
-
-  if (!isMounted) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <Loader2 className="w-8 h-8 animate-spin text-emerald-500" />
-      </div>
-    );
-  }
 
   const handleConfirmDeposit = (orderId: string) => {
     confirmMutation.mutate(orderId);
@@ -166,8 +161,15 @@ export default function AdminDashboardPage() {
               <p className="text-xs text-gray-500 font-bold">بالجملة BelGomla</p>
             </div>
           </div>
-          <Button variant="ghost" size="sm" onClick={handleLogout} className="gap-2 text-gray-500">
-            <LogOut className="w-4 h-4" />
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleLogout}
+            className="gap-2 text-gray-500 min-h-[44px] min-w-[44px]"
+            aria-label="تسجيل خروج الأدمن"
+            title="تسجيل خروج الأدمن"
+          >
+            <LogOut className="w-4 h-4" aria-hidden="true" />
             خروج
           </Button>
         </div>
@@ -184,7 +186,7 @@ export default function AdminDashboardPage() {
               <div>
                 <p className="text-xs text-gray-500 font-bold">في انتظار التأكيد</p>
                 <div className="text-2xl font-black text-gray-900">
-                  {!isMounted || ordersLoading ? <Skeleton className="h-8 w-8" /> : pendingOrders?.length || 0}
+                  {ordersLoading ? <Skeleton className="h-8 w-8" /> : pendingOrders?.length || 0}
                 </div>
               </div>
             </CardContent>
@@ -198,7 +200,7 @@ export default function AdminDashboardPage() {
               <div>
                 <p className="text-xs text-gray-500 font-bold">الكارتونة الحالية</p>
                 <div className="text-2xl font-black text-emerald-600">
-                  {!isMounted || !carton ? <Skeleton className="h-8 w-20" /> : `${carton.confirmedCount} / ${carton.capacity}`}
+                  {!carton ? <Skeleton className="h-8 w-20" /> : `${carton.confirmedCount} / ${carton.capacity}`}
                 </div>
               </div>
             </CardContent>
@@ -212,7 +214,7 @@ export default function AdminDashboardPage() {
               <div>
                 <p className="text-xs text-gray-500 font-bold">إجمالي الكراتين</p>
                 <div className="text-2xl font-black text-gray-900">
-                  {!isMounted || cartonsLoading ? <Skeleton className="h-8 w-8" /> : adminCartons?.length || 0}
+                  {cartonsLoading ? <Skeleton className="h-8 w-8" /> : adminCartons?.length || 0}
                 </div>
               </div>
             </CardContent>
@@ -226,7 +228,7 @@ export default function AdminDashboardPage() {
               <div>
                 <p className="text-xs text-gray-500 font-bold">إيرادات مؤكدة</p>
                 <div className="text-xl font-black text-purple-600">
-                  {!isMounted || ordersLoading ? <Skeleton className="h-8 w-16" /> : `${totalRevenue} ج`}
+                  {ordersLoading ? <Skeleton className="h-8 w-16" /> : `${totalRevenue} ج`}
                 </div>
               </div>
             </CardContent>

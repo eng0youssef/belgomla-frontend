@@ -4,6 +4,7 @@ import { Loader2 } from "lucide-react";
 import Header from "@/components/Header";
 import ProductCard from "@/components/ProductCard";
 import ActivityTicker from "@/components/ActivityTicker";
+import Footer from "@/components/Footer";
 import { useActiveProducts } from "@/hooks/use-products";
 
 export default function Home() {
@@ -54,13 +55,9 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Footer */}
-      <footer className="py-8 text-center text-muted-foreground text-sm border-t border-border mt-auto">
-        <p className="font-bold">بالجملة BelGomla © {new Date().getFullYear()}</p>
-        <p className="text-xs mt-1">وفر فرق المحلات في جيبك</p>
-      </footer>
-
+      <Footer />
       <ActivityTicker />
     </main>
   );
 }
+

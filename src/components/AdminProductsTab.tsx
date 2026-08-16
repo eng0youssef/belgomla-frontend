@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import NextImage from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Plus, Image as ImageIcon, CheckCircle2, Edit2 } from "lucide-react";
 import { useActiveProducts, useCreateProduct, useUpdateProduct } from "@/hooks/use-products";
 import { CreateProductRequest, ProductResponse } from "@/types/api";
+import { isTrustedImageUrl } from "@/lib/image-utils";
 
 export function AdminProductsTab() {
   const { data: products, isLoading } = useActiveProducts();
@@ -203,9 +205,15 @@ export function AdminProductsTab() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {products?.map(product => (
           <Card key={product.id} className="border-0 shadow hover:shadow-lg transition-all overflow-hidden group">
-            {product.imageUrl ? (
-              <div className="h-48 w-full bg-gray-100 relative">
-                <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover" />
+            {isTrustedImageUrl(product.imageUrl) ? (
+              <div className="h-48 w-full bg-gray-100 relative overflow-hidden">
+                <NextImage
+                  src={product.imageUrl!}
+                  alt={product.name}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  className="object-cover"
+                />
               </div>
             ) : (
               <div className="h-48 w-full bg-gray-100 flex items-center justify-center">
@@ -222,10 +230,12 @@ export function AdminProductsTab() {
                   <Button 
                     variant="ghost" 
                     size="sm" 
-                    className="h-7 w-7 p-0 text-gray-500 hover:text-blue-600 hover:bg-blue-50"
+                    className="min-h-[36px] min-w-[36px] p-0 text-gray-500 hover:text-blue-600 hover:bg-blue-50"
                     onClick={() => handleEdit(product)}
+                    aria-label={`تعديل منتج ${product.name}`}
+                    title={`تعديل منتج ${product.name}`}
                   >
-                    <Edit2 className="w-4 h-4" />
+                    <Edit2 className="w-4 h-4" aria-hidden="true" />
                   </Button>
                 </div>
               </div>

@@ -1,10 +1,12 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { Package, Users, Tag, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ProductResponse } from "@/types/api";
+import { isTrustedImageUrl } from "@/lib/image-utils";
 
 interface ProductCardProps {
   product: ProductResponse;
@@ -38,8 +40,15 @@ export default function ProductCard({ product }: ProductCardProps) {
       </div>
 
       <div className="aspect-square bg-gray-50 rounded-2xl mb-6 flex items-center justify-center mt-4 overflow-hidden relative">
-        {product.imageUrl ? (
-          <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover" />
+        {isTrustedImageUrl(product.imageUrl) ? (
+          <Image
+            src={product.imageUrl!}
+            alt={product.name}
+            fill
+            sizes="(max-width: 640px) calc(100vw - 48px), (max-width: 768px) 45vw, 30vw"
+            className="object-cover"
+            loading="lazy"
+          />
         ) : (
           <Package className="w-24 h-24 text-gray-300" />
         )}

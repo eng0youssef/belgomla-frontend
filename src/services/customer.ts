@@ -80,36 +80,31 @@ export async function updateCustomerProfile(
   data: UpdateCustomerProfileRequest
 ): Promise<boolean> {
   const token = getCustomerToken();
-  try {
-    const response = await apiClient<ApiResponse<boolean>>(
-      "/customer/me/profile",
-      {
-        method: "PUT",
-        body: data,
-        token,
-      }
-    );
-
-    if (!response.success) {
-      throw new Error(response.message || "فشل تحديث البيانات");
+  const response = await apiClient<ApiResponse<boolean>>(
+    "/customer/me/profile",
+    {
+      method: "PUT",
+      body: data,
+      token,
     }
+  );
 
-    return response.data || false;
-  } catch (error: any) {
-    throw new Error(error.message || "حدث خطأ أثناء تحديث البيانات");
+  if (!response.success) {
+    throw new Error(response.message || "فشل تحديث البيانات");
   }
+
+  return response.data ?? false;
 }
 
+/**
+ * Cancel a customer's order.
+ */
 export async function cancelCustomerOrder(orderId: string): Promise<void> {
   const token = getCustomerToken();
   if (!token) throw new Error("غير مصرح");
 
-  try {
-    await apiClient(`/customer/me/orders/${orderId}/cancel`, {
-      method: "DELETE",
-      token,
-    });
-  } catch (error: any) {
-    throw new Error(error.message || "حدث خطأ أثناء إلغاء الطلب");
-  }
+  await apiClient(`/customer/me/orders/${orderId}/cancel`, {
+    method: "DELETE",
+    token,
+  });
 }

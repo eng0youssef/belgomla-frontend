@@ -55,10 +55,12 @@ export default function OrdersHistoryPage() {
         <div className="max-w-4xl mx-auto flex items-center gap-4">
           <Button
             variant="ghost"
-            className="text-white hover:bg-emerald-700 p-2 rounded-full"
+            className="text-white hover:bg-emerald-700 min-w-[44px] min-h-[44px] p-2 rounded-full"
             onClick={() => router.push("/dashboard")}
+            aria-label="الرجوع للوحة التحكم"
+            title="الرجوع للوحة التحكم"
           >
-            <ArrowRight className="w-6 h-6" />
+            <ArrowRight className="w-6 h-6" aria-hidden="true" />
           </Button>
           <div>
             <h1 className="text-2xl font-black mb-1">سجل الطلبات التفصيلي</h1>

@@ -13,16 +13,13 @@ import { CartonTrackingCard } from "@/components/CartonTrackingCard";
 
 export default function CustomerDashboardPage() {
   const router = useRouter();
-  const logout = useCustomerLogout();
+  const logoutMutation = useCustomerLogout();
   const cancelMutation = useCancelCustomerOrder();
   const [copied, setCopied] = useState(false);
   const [copiedLink, setCopiedLink] = useState<string | null>(null);
 
-  const [isMounted, setIsMounted] = useState(false);
-
-  // Check auth
+  // Secondary auth check (Edge middleware is the primary guard)
   useEffect(() => {
-    setIsMounted(true);
     if (!getCustomerToken()) {
       router.replace("/login");
     }
@@ -30,7 +27,7 @@ export default function CustomerDashboardPage() {
 
   const { data: dashboardData, isLoading, isError, error } = useCustomerDashboard();
 
-  if (!isMounted || isLoading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <Loader2 className="w-8 h-8 animate-spin text-emerald-500" />
@@ -67,8 +64,11 @@ export default function CustomerDashboardPage() {
   };
 
   const handleLogout = () => {
-    logout();
-    router.push("/login");
+    logoutMutation.mutate(undefined, {
+      onSuccess: () => {
+        router.replace("/login");
+      },
+    });
   };
 
   const getStatusIcon = (status: OrderStatus) => {
@@ -96,25 +96,30 @@ export default function CustomerDashboardPage() {
           <div className="flex items-center gap-1 md:gap-2">
             <Button
               variant="ghost"
-              className="text-emerald-100 hover:bg-emerald-700/50 hover:text-white px-2"
+              className="text-emerald-100 hover:bg-emerald-700/50 hover:text-white min-w-[44px] min-h-[44px] p-2 rounded-xl"
               onClick={() => router.push("/")}
+              aria-label="الرئيسية (تصفح المنتجات)"
               title="الرئيسية (تصفح المنتجات)"
             >
-              <Home className="w-5 h-5" />
+              <Home className="w-5 h-5" aria-hidden="true" />
             </Button>
             <Button
               variant="ghost"
-              className="text-emerald-100 hover:bg-emerald-700/50 hover:text-white px-2"
+              className="text-emerald-100 hover:bg-emerald-700/50 hover:text-white min-w-[44px] min-h-[44px] p-2 rounded-xl"
               onClick={() => router.push("/dashboard/settings")}
+              aria-label="إعدادات الحساب"
+              title="إعدادات الحساب"
             >
-              <Settings className="w-5 h-5" />
+              <Settings className="w-5 h-5" aria-hidden="true" />
             </Button>
             <Button
               variant="ghost"
-              className="text-white hover:bg-emerald-700/50 hover:text-white px-2"
+              className="text-white hover:bg-emerald-700/50 hover:text-white min-w-[44px] min-h-[44px] p-2 rounded-xl"
               onClick={handleLogout}
+              aria-label="تسجيل الخروج"
+              title="تسجيل الخروج"
             >
-              <LogOut className="w-5 h-5" />
+              <LogOut className="w-5 h-5" aria-hidden="true" />
             </Button>
           </div>
         </div>

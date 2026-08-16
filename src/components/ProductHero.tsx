@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { memo } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ShieldCheck, Truck, Users, BadgePercent, Flame } from "lucide-react";
@@ -11,14 +11,105 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MOCK_PRODUCT } from "@/lib/constants";
 
+// ─── 1. Hoist static data outside the component ──────────────────────────────
+const TRUST_BADGES = [
+  { icon: ShieldCheck, label: "دفع آمن", color: "text-emerald-600", bg: "bg-emerald-50" },
+  { icon: Truck, label: "توصيل لباب البيت", color: "text-blue-600", bg: "bg-blue-50" },
+  { icon: Users, label: "شراء جماعي", color: "text-amber-600", bg: "bg-amber-50" },
+] as const;
+
+// ─── 2. Memoized Carton Progress Bar ─────────────────────────────────────────
+interface CartonProgressBarProps {
+  progressPercent: number;
+  confirmedCount: number;
+  capacity: number;
+  remaining: number;
+  isLoading: boolean;
+}
+
+const CartonProgressBar = memo(function CartonProgressBar({
+  progressPercent,
+  confirmedCount,
+  capacity,
+  remaining,
+  isLoading,
+}: CartonProgressBarProps) {
+  return (
+    <div className="bg-gradient-to-br from-emerald-50/80 to-emerald-50/30 rounded-2xl p-4 border border-emerald-200/50">
+      <div className="flex justify-between text-sm mb-2.5">
+        <span className="font-black text-gray-700 flex items-center gap-1.5">
+          🔥 شريط الكارتونة
+        </span>
+        {isLoading ? (
+          <Skeleton className="h-5 w-24" />
+        ) : (
+          <span className="font-black text-emerald-600">
+            {confirmedCount} من {capacity} حجزوا
+          </span>
+        )}
+      </div>
+
+      {/* Progress Bar */}
+      <div className="w-full bg-emerald-100 rounded-full h-5 overflow-hidden relative shadow-inner">
+        <motion.div
+          className="h-full bg-gradient-to-r from-emerald-400 via-emerald-500 to-emerald-600 rounded-full relative"
+          initial={{ width: 0 }}
+          animate={{ width: `${progressPercent}%` }}
+          transition={{ duration: 1.5, ease: "easeOut" }}
+        >
+          {/* Shimmer effect */}
+          <div className="absolute inset-0 overflow-hidden rounded-full">
+            <div className="absolute inset-0 w-1/2 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" />
+          </div>
+        </motion.div>
+      </div>
+
+      <p className="text-sm font-black text-center mt-2.5 text-emerald-700">
+        {remaining > 0 ? (
+          <>
+            باقي <span className="text-amber-600">{remaining}</span> قطع وتطلع الكارتونة! 📦
+          </>
+        ) : (
+          "الكارتونة اكتملت! 🎉"
+        )}
+      </p>
+      <p className="text-[11px] text-emerald-600/70 mt-1 text-center font-bold">
+        العدّاد بيزيد فور تأكيد استلام العربون رسمياً 🔒
+      </p>
+    </div>
+  );
+});
+
+// ─── 3. Memoized Trust Badges ────────────────────────────────────────────────
+const TrustBadges = memo(function TrustBadges() {
+  return (
+    <div className="grid grid-cols-3 gap-3">
+      {TRUST_BADGES.map((badge, i) => (
+        <motion.div
+          key={badge.label}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 + i * 0.1 }}
+          className={`${badge.bg} rounded-xl p-3 text-center border border-border/50`}
+        >
+          <badge.icon className={`w-6 h-6 mx-auto mb-1 ${badge.color}`} />
+          <p className="text-xs font-black text-gray-600">{badge.label}</p>
+        </motion.div>
+      ))}
+    </div>
+  );
+});
+
+// ─── 4. Main Component ───────────────────────────────────────────────────────
 export default function ProductHero() {
   const { data: carton, isLoading } = useActiveCarton();
-  const [imageIndex, setImageIndex] = useState(0);
 
   const progressPercent = carton
     ? (carton.confirmedCount / carton.capacity) * 100
     : 0;
   const remaining = carton ? carton.capacity - carton.confirmedCount : 0;
+  const confirmedCount = carton?.confirmedCount || 0;
+  const capacity = carton?.capacity || 10;
 
   const openBooking = () => {
     window.dispatchEvent(new CustomEvent("openBooking"));
@@ -88,50 +179,14 @@ export default function ProductHero() {
             </span>
           </div>
 
-          {/* Live Carton Progress */}
-          <div className="bg-gradient-to-br from-emerald-50/80 to-emerald-50/30 rounded-2xl p-4 border border-emerald-200/50">
-            <div className="flex justify-between text-sm mb-2.5">
-              <span className="font-black text-gray-700 flex items-center gap-1.5">
-                🔥 شريط الكارتونة
-              </span>
-              {isLoading ? (
-                <Skeleton className="h-5 w-24" />
-              ) : (
-                <span className="font-black text-emerald-600">
-                  {carton?.confirmedCount || 0} من {carton?.capacity || 10} حجزوا
-                </span>
-              )}
-            </div>
-
-            {/* Progress Bar */}
-            <div className="w-full bg-emerald-100 rounded-full h-5 overflow-hidden relative shadow-inner">
-              <motion.div
-                className="h-full bg-gradient-to-r from-emerald-400 via-emerald-500 to-emerald-600 rounded-full relative"
-                initial={{ width: 0 }}
-                animate={{ width: `${progressPercent}%` }}
-                transition={{ duration: 1.5, ease: "easeOut" }}
-              >
-                {/* Shimmer effect */}
-                <div className="absolute inset-0 overflow-hidden rounded-full">
-                  <div className="absolute inset-0 w-1/2 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" />
-                </div>
-              </motion.div>
-            </div>
-
-            <p className="text-sm font-black text-center mt-2.5 text-emerald-700">
-              {remaining > 0 ? (
-                <>
-                  باقي <span className="text-amber-600">{remaining}</span> قطع
-                  وتطلع الكارتونة! 📦
-                </>
-              ) : (
-                "الكارتونة اكتملت! 🎉"
-              )}
-            </p>
-            <p className="text-[11px] text-emerald-600/70 mt-1 text-center font-bold">
-              العدّاد بيزيد فور تأكيد استلام العربون رسمياً 🔒
-            </p>
-          </div>
+          {/* Live Carton Progress (Memoized) */}
+          <CartonProgressBar
+            progressPercent={progressPercent}
+            confirmedCount={confirmedCount}
+            capacity={capacity}
+            remaining={remaining}
+            isLoading={isLoading}
+          />
 
           {/* CTA Button */}
           <Button
@@ -144,25 +199,9 @@ export default function ProductHero() {
         </CardContent>
       </Card>
 
-      {/* Trust Badges */}
-      <div className="grid grid-cols-3 gap-3">
-        {[
-          { icon: ShieldCheck, label: "دفع آمن", color: "text-emerald-600", bg: "bg-emerald-50" },
-          { icon: Truck, label: "توصيل لباب البيت", color: "text-blue-600", bg: "bg-blue-50" },
-          { icon: Users, label: "شراء جماعي", color: "text-amber-600", bg: "bg-amber-50" },
-        ].map((badge, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 + i * 0.1 }}
-            className={`${badge.bg} rounded-xl p-3 text-center border border-border/50`}
-          >
-            <badge.icon className={`w-6 h-6 mx-auto mb-1 ${badge.color}`} />
-            <p className="text-xs font-black text-gray-600">{badge.label}</p>
-          </motion.div>
-        ))}
-      </div>
+      {/* Trust Badges (Memoized) */}
+      <TrustBadges />
     </section>
   );
 }
+

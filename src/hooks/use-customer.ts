@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { customerLogin, customerRegister, getCustomerDashboard, updateCustomerProfile, cancelCustomerOrder } from "@/services/customer";
 import { getCustomerToken, removeCustomerToken } from "@/services/api-client";
+import { useMounted } from "./use-mounted";
 import type {
   CustomerLoginRequest,
   CustomerRegisterRequest,
@@ -30,20 +31,27 @@ export function useCustomerRegister() {
 }
 
 export function useCustomerDashboard() {
+  const mounted = useMounted();
   return useQuery<CustomerDashboardResponse, Error>({
     queryKey: ["customer-dashboard"],
     queryFn: getCustomerDashboard,
-    enabled: !!getCustomerToken(),
+    enabled: mounted && !!getCustomerToken(),
     retry: false,
   });
 }
 
+
 export function useCustomerLogout() {
   const queryClient = useQueryClient();
-  return () => {
-    removeCustomerToken();
-    queryClient.clear();
-  };
+  return useMutation<void, Error, void>({
+    mutationFn: async () => {
+      removeCustomerToken();
+    },
+    onSuccess: () => {
+      // Clear ALL cached query data to prevent data leakage between sessions
+      queryClient.clear();
+    },
+  });
 }
 
 export function useUpdateCustomerProfile() {

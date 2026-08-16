@@ -1,7 +1,8 @@
-"use client";
+﻿"use client";
 
 import { Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import {
   CheckCircle,
@@ -11,11 +12,39 @@ import {
   CreditCard,
   ArrowRight,
   User,
+  Loader2,
+  AlertCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { whatsappShareUrl } from "@/lib/utils";
-import { getCustomerToken } from "@/services/api-client";
+import { getCustomerToken, apiClient } from "@/services/api-client";
+import type { OrderResponse } from "@/types/api";
+import { PAYMENT_PHONE, PAYMENT_LABEL } from "@/lib/constants";
+
+// ─── Referral code sanitizer ──────────────────────────────────────────────────
+// Allow only alphanumeric codes 4–16 chars long.
+// The API always returns clean codes, but we validate defensively.
+const SAFE_CODE_RE = /^[A-Z0-9]{4,16}$/i;
+
+function sanitizeCode(raw: string | null | undefined): string {
+  if (!raw || !SAFE_CODE_RE.test(raw.trim())) return "";
+  return raw.trim().toUpperCase();
+}
+
+// ─── Order data fetcher ───────────────────────────────────────────────────────
+
+function useOrderById(orderId: string) {
+  return useQuery<OrderResponse, Error>({
+    queryKey: ["order", orderId],
+    queryFn: () => apiClient<OrderResponse>(`/public/orders/${orderId}`),
+    enabled: !!orderId,
+    staleTime: Infinity,   // order data is immutable once created
+    retry: 2,
+  });
+}
+
+// ─── Main content (inside Suspense) ──────────────────────────────────────────
 
 function OrderSuccessContent() {
   const params = useSearchParams();
@@ -27,29 +56,67 @@ function OrderSuccessContent() {
     setIsLoggedIn(!!getCustomerToken());
   }, []);
 
-  const productName = params.get("product") || "المنتج";
-  const productId = params.get("productId") || "";
-  const cartonNumber = params.get("carton") || "1";
-  const finalPrice = params.get("price") || "0";
-  const referralCode = params.get("ref") || "";
-  const customerName = params.get("name") || "العميل";
+  // The ONLY thing we read from URL params is the orderId (non-sensitive).
+  // All financial data (price, carton number, name) comes from the API.
+  const orderId = params.get("orderId") ?? "";
 
-  const baseUrl = "http://localhost:3000"; // We should use window.location.origin but since it's hardcoded for now let's just use it, or dynamically:
-  const origin = typeof window !== 'undefined' ? window.location.origin : baseUrl;
-  
-  const referralLink = referralCode 
-    ? (productId ? `${origin}/product/${productId}?ref=${referralCode}` : `${origin}?ref=${referralCode}`)
+  const { data: order, isLoading, isError } = useOrderById(orderId);
+
+  // ─── Derived values (all from API, never from URL params) ──────────────────
+
+  const referralCode = sanitizeCode(order?.personalReferralCode);
+  const origin = typeof window !== "undefined" ? window.location.origin : "";
+  const referralLink = referralCode ? `${origin}?ref=${referralCode}` : "";
+  const shareText = referralLink
+    ? `أنا لسه حاجزت بسعر الجملة من موقع بالجملة! 🎉 خش احجز معايا واحنا نوفر مع بعض. استخدم اللينك ده: ${referralLink}`
     : "";
 
-  const shareText = `أنا لسه حاجزت ${productName} بسعر الجملة من موقع بالجملة! 🎉 خش احجز معايا واحنا نوفر مع بعض. استخدم الكود الخاص بي: ${referralLink}`;
-
   const copyLink = () => {
-    if (referralLink) {
-      navigator.clipboard.writeText(referralLink);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }
+    if (!referralLink) return;
+    navigator.clipboard.writeText(referralLink);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
+
+  // ─── Loading state ─────────────────────────────────────────────────────────
+
+  if (!orderId) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-6 text-center" dir="rtl">
+        <AlertCircle className="w-16 h-16 text-red-400 mb-4" />
+        <h1 className="text-2xl font-black text-gray-800 mb-2">رابط غير صحيح</h1>
+        <p className="text-gray-500 font-bold mb-6">لم يتم العثور على رقم الطلب في الرابط.</p>
+        <Button onClick={() => router.push("/")} className="gap-2 font-black rounded-2xl">
+          <ArrowRight className="w-4 h-4" /> الرئيسية
+        </Button>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <Loader2 className="w-10 h-10 animate-spin text-emerald-500" />
+      </div>
+    );
+  }
+
+  if (isError || !order) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-6 text-center" dir="rtl">
+        <AlertCircle className="w-16 h-16 text-red-400 mb-4" />
+        <h1 className="text-2xl font-black text-gray-800 mb-2">تعذّر تحميل الطلب</h1>
+        <p className="text-gray-500 font-bold mb-6">
+          حدث خطأ أثناء جلب بيانات طلبك. تأكد من الاتصال بالإنترنت وحاول مرة أخرى.
+        </p>
+        <Button onClick={() => router.push("/")} className="gap-2 font-black rounded-2xl">
+          <ArrowRight className="w-4 h-4" /> الرئيسية
+        </Button>
+      </div>
+    );
+  }
+
+  // ─── Success UI ────────────────────────────────────────────────────────────
 
   return (
     <div
@@ -85,13 +152,14 @@ function OrderSuccessContent() {
             transition={{ delay: 0.3 }}
             className="text-emerald-100 font-bold"
           >
-            أهلاً {customerName}، حجزك اتسجّل وجاري المراجعة
+            {/* customerName comes from the API — never from URL params */}
+            أهلاً {order.customerName}، حجزك اتسجّل وجاري المراجعة
           </motion.p>
         </motion.div>
       </div>
 
       <div className="max-w-md mx-auto px-4 -mt-12 relative z-20 space-y-5 pb-16">
-        {/* Order Summary Card */}
+        {/* Order Summary Card — all values from API */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -106,16 +174,23 @@ function OrderSuccessContent() {
           </div>
           <div className="space-y-3">
             <div className="flex justify-between items-center py-2 border-b border-gray-50">
-              <span className="text-gray-500 font-bold text-sm">المنتج</span>
-              <span className="font-black text-gray-800">{productName}</span>
+              <span className="text-gray-500 font-bold text-sm">رقم الطلب</span>
+              <span className="font-black text-gray-600 text-xs" dir="ltr">{order.orderId.slice(0, 8).toUpperCase()}</span>
             </div>
             <div className="flex justify-between items-center py-2 border-b border-gray-50">
               <span className="text-gray-500 font-bold text-sm">رقم الكارتونة</span>
-              <span className="font-black text-gray-800">#{cartonNumber}</span>
+              <span className="font-black text-gray-800">#{order.cartonNumber}</span>
             </div>
+            {order.appliedDiscount > 0 && (
+              <div className="flex justify-between items-center py-2 border-b border-gray-50">
+                <span className="text-gray-500 font-bold text-sm">خصم الإحالة</span>
+                <span className="font-black text-purple-600">- {order.appliedDiscount} ج.م</span>
+              </div>
+            )}
             <div className="flex justify-between items-center py-2">
               <span className="text-gray-500 font-bold text-sm">السعر النهائي</span>
-              <span className="font-black text-emerald-600 text-lg">{finalPrice} ج.م</span>
+              {/* finalPrice from API — cannot be forged via URL */}
+              <span className="font-black text-emerald-600 text-lg">{order.finalPrice} ج.م</span>
             </div>
           </div>
         </motion.div>
@@ -139,9 +214,9 @@ function OrderSuccessContent() {
           </p>
 
           <div className="bg-white rounded-2xl p-4 text-center mb-4 shadow-sm border border-amber-100">
-            <p className="text-xs text-gray-400 font-bold mb-1">فودافون كاش / إنستاباي</p>
+            <p className="text-xs text-gray-400 font-bold mb-1">{PAYMENT_LABEL}</p>
             <p className="text-3xl font-black text-gray-800 tracking-widest" dir="ltr">
-              0100 000 0000
+              {PAYMENT_PHONE}
             </p>
           </div>
 
@@ -150,7 +225,7 @@ function OrderSuccessContent() {
           </div>
         </motion.div>
 
-        {/* Referral Share Card */}
+        {/* Referral Share Card — only shown when referral code exists and passes sanitization */}
         {referralLink && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -168,7 +243,7 @@ function OrderSuccessContent() {
               ادعُ أصحابك باللينك ده واحصل على خصم إضافي على طلبك كل ما حد يشتري من خلالك:
             </p>
 
-            {/* Referral Code Badge */}
+            {/* Referral Code Badge — value from API, sanitized */}
             <div className="bg-white rounded-xl p-3 text-center mb-3 border border-purple-100 shadow-sm">
               <p className="text-xs text-gray-400 mb-1">كودك الشخصي</p>
               <p className="text-2xl font-black text-purple-700 tracking-widest" dir="ltr">
@@ -186,6 +261,7 @@ function OrderSuccessContent() {
               />
               <button
                 onClick={copyLink}
+                aria-label={copied ? "تم النسخ" : "نسخ الرابط"}
                 className={`px-3 py-2.5 rounded-xl transition-all font-bold text-sm flex items-center gap-1.5 ${
                   copied
                     ? "bg-emerald-500 text-white"
@@ -258,6 +334,8 @@ function OrderSuccessContent() {
     </div>
   );
 }
+
+// ─── Page wrapper ─────────────────────────────────────────────────────────────
 
 export default function OrderSuccessPage() {
   return (

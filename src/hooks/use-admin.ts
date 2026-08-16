@@ -5,6 +5,7 @@ import {
   confirmDeposit,
 } from "@/services/admin";
 import { getAdminToken } from "@/services/api-client";
+import { useMounted } from "./use-mounted";
 import type {
   AdminLoginRequest,
   LoginResponse,
@@ -26,13 +27,21 @@ export function useAdminLogin() {
  * Hook to fetch pending orders (admin).
  */
 export function usePendingOrders() {
+  const mounted = useMounted();
   return useQuery<PendingOrderResponse[]>({
     queryKey: ["pendingOrders"],
     queryFn: getPendingOrders,
     refetchInterval: 30 * 1000,
-    enabled: !!getAdminToken(),
+    enabled: mounted && !!getAdminToken(),
+    retry: (failureCount, error) => {
+      // Do not retry auth failures — api-client handles 401 redirect to login
+      if (error instanceof Error && error.message.includes("401")) return false;
+      return failureCount < 1;
+    },
   });
 }
+
+
 
 /**
  * Hook to confirm a customer's deposit.

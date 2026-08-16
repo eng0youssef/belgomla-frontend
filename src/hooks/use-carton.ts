@@ -9,6 +9,7 @@ import {
 import type { ActiveCartonResponse } from "@/types/api";
 import type { AdminCartonDetail, CartonStatusTransition } from "@/services/carton";
 import { getAdminToken } from "@/services/api-client";
+import { useMounted } from "./use-mounted";
 
 const DEFAULT_PRODUCT_ID =
   process.env.NEXT_PUBLIC_DEFAULT_PRODUCT_ID ||
@@ -31,13 +32,20 @@ export function useActiveCarton(productId?: string) {
  * Hook to fetch all cartons for a product (admin).
  */
 export function useAdminCartons(productId: string) {
+  const mounted = useMounted();
   return useQuery<AdminCartonDetail[]>({
     queryKey: ["adminCartons", productId],
     queryFn: () => getAdminCartonsByProduct(productId),
-    enabled: !!getAdminToken() && !!productId,
+    enabled: mounted && !!getAdminToken() && !!productId,
     refetchInterval: 30 * 1000,
+    retry: (failureCount, error) => {
+      if (error instanceof Error && error.message.includes("401")) return false;
+      return failureCount < 1;
+    },
   });
 }
+
+
 
 /**
  * Hook to update carton lifecycle status (admin).

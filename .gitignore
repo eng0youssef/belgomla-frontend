@@ -53,3 +53,9 @@ GroupBuyingApi/**/appsettings.local.json
 
 # Publish output
 GroupBuyingApi/**/publish/
+
+# ─── Security Audits (local only — NEVER push to GitHub) ─────────────────────
+SECURITY_AUDIT.md
+SECURITY_AUDIT*.md
+*_audit.md
+*_audit_*.md

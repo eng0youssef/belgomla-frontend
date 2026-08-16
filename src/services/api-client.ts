@@ -1,6 +1,21 @@
 import type { ApiResponse } from "@/types/api";
+import {
+  getAdminToken as _getAdminToken,
+  removeAdminToken as _removeAdminToken,
+} from "./token-store";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5075/api";
+
+// ─── Token helpers — re-exported from token-store so all existing
+// `import { getAdminToken } from '@/services/api-client'` paths keep working.
+export {
+  getAdminToken,
+  setAdminToken,
+  removeAdminToken,
+  getCustomerToken,
+  setCustomerToken,
+  removeCustomerToken,
+} from "./token-store";
 export class ApiError extends Error {
   status: number;
   details?: string;
@@ -52,7 +67,7 @@ export async function apiClient<T>(
     let errorDetails: string | undefined;
 
     if (response.status === 401) {
-      removeAdminToken();
+      _removeAdminToken();
       if (typeof window !== "undefined") {
         window.location.href = "/admin/login";
       }
@@ -87,48 +102,3 @@ export async function apiClient<T>(
   return response.json() as Promise<T>;
 }
 
-
-export function getAdminToken(): string | null {
-  if (typeof window === "undefined") return null;
-  return localStorage.getItem("belgomla_admin_token");
-}
-
-/**
- * Store the admin JWT token.
- */
-export function setAdminToken(token: string): void {
-  if (typeof window === "undefined") return;
-  localStorage.setItem("belgomla_admin_token", token);
-}
-
-/**
- * Remove the admin JWT token.
- */
-export function removeAdminToken(): void {
-  if (typeof window === "undefined") return;
-  localStorage.removeItem("belgomla_admin_token");
-}
-
-/**
- * Get the customer JWT token from localStorage.
- */
-export function getCustomerToken(): string | null {
-  if (typeof window === "undefined") return null;
-  return localStorage.getItem("belgomla_customer_token");
-}
-
-/**
- * Store the customer JWT token.
- */
-export function setCustomerToken(token: string): void {
-  if (typeof window === "undefined") return;
-  localStorage.setItem("belgomla_customer_token", token);
-}
-
-/**
- * Remove the customer JWT token.
- */
-export function removeCustomerToken(): void {
-  if (typeof window === "undefined") return;
-  localStorage.removeItem("belgomla_customer_token");
-}
