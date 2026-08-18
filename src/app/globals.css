@@ -4,26 +4,26 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 210 40% 98%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-    --primary: 160 84% 39%;
+    --primary: 160 84% 36%;
     --primary-foreground: 0 0% 100%;
     --secondary: 38 92% 50%;
     --secondary-foreground: 0 0% 100%;
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 160 84% 39%;
+    --accent: 160 84% 36%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 160 84% 39%;
-    --radius: 0.75rem;
+    --ring: 160 84% 36%;
+    --radius: 1rem;
   }
 }
 
@@ -32,23 +32,24 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground font-cairo;
+    @apply bg-background text-foreground font-cairo antialiased selection:bg-emerald-100 selection:text-emerald-900;
   }
 }
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: hsl(var(--muted-foreground) / 0.3);
-  border-radius: 3px;
+  background: hsl(var(--muted-foreground) / 0.25);
+  border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--muted-foreground) / 0.5);
+  background: hsl(var(--muted-foreground) / 0.45);
 }
 
 /* RTL fixes for specific components */
@@ -57,28 +58,22 @@
   text-align: right;
 }
 
-/* Gradient text utility */
-.gradient-text {
-  @apply bg-clip-text text-transparent bg-gradient-to-l from-emerald-500 to-emerald-700;
+/* Subtle modern card styling */
+.clean-card {
+  @apply bg-white rounded-2xl border border-slate-200/80 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.05),0_10px_20px_-4px_rgba(0,0,0,0.03)];
 }
 
-/* Glass morphism card */
-.glass-card {
-  @apply bg-white/80 backdrop-blur-xl border border-white/20 shadow-xl;
+.clean-card-hover {
+  @apply transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:-translate-y-0.5;
 }
 
-/* Urgency pulse animation */
-.urgency-pulse {
-  animation: urgency_pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+/* Shimmer effect for progress bars */
+@keyframes shimmer-smooth {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
 }
 
-@keyframes urgency_pulse {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.85;
-    transform: scale(1.02);
-  }
+.animate-shimmer-smooth {
+  animation: shimmer-smooth 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
+

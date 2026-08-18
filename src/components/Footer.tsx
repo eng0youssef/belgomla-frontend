@@ -1,12 +1,124 @@
-﻿export default function Footer() {
+import Link from "next/link";
+import { ShoppingBag, ShieldCheck, Truck, MessageCircle, Phone, MapPin, CheckCircle } from "lucide-react";
+import { SUPPORT_PHONE, VILLAGES } from "@/lib/constants";
+import { whatsappChatUrl } from "@/lib/utils";
+
+export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="py-8 text-center text-muted-foreground text-sm border-t border-border mt-auto">
-      <p className="font-bold" suppressHydrationWarning>
-        بالجملة BelGomla © {currentYear}
-      </p>
-      <p className="text-xs mt-1">وفر فرق المحلات في جيبك</p>
+    <footer className="bg-slate-900 text-slate-300 border-t border-slate-800 pt-12 pb-8 mt-16">
+      <div className="max-w-6xl mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 pb-12 border-b border-slate-800">
+          {/* Brand & About */}
+          <div className="space-y-3 md:col-span-1">
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 bg-emerald-500 rounded-xl flex items-center justify-center text-slate-900 font-bold">
+                <ShoppingBag className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-xl font-black text-white tracking-tight">بالجملة BelGomla</span>
+            </div>
+            <p className="text-xs text-slate-400 leading-relaxed">
+              منصة الشراء الجماعي الذكية في مصر.. بنجمع أصحاب الطلبات في كرتونة واحدة عشان الكل يشتري بسعر تاجر الجملة الحقيقي ويوفر فرق المحلات.
+            </p>
+            <div className="pt-2">
+              <a
+                href={whatsappChatUrl(SUPPORT_PHONE, "مرحباً، أود الاستفسار عن منصة بالجملة")}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-xs font-bold text-emerald-400 bg-emerald-950/60 border border-emerald-800/60 px-3 py-1.5 rounded-lg hover:bg-emerald-900/60 transition-colors"
+              >
+                <MessageCircle className="w-4 h-4 text-[#25D366]" />
+                واتساب خدمة العملاء
+              </a>
+            </div>
+          </div>
+
+          {/* Value Propositions */}
+          <div className="space-y-3">
+            <h4 className="text-sm font-black text-white">ليه تشتري معانا؟</h4>
+            <ul className="space-y-2 text-xs text-slate-400">
+              <li className="flex items-center gap-2">
+                <CheckCircle className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+                <span>سعر الجملة للقطعة الواحدة</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+                <span>معاينة كاملة مع المندوب قبل دفع الباقي</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <Truck className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+                <span>توصيل سريع لحد باب البيت</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <CheckCircle className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+                <span>خصومات إضافية عند دعوة الشلة</span>
+              </li>
+            </ul>
+          </div>
+
+          {/* Coverage Areas */}
+          <div className="space-y-3">
+            <h4 className="text-sm font-black text-white flex items-center gap-1.5">
+              <MapPin className="w-4 h-4 text-emerald-400" />
+              مناطق التوصيل الحالية
+            </h4>
+            <p className="text-xs text-slate-400 leading-relaxed">
+              نغطي حالياً محافظة الدقهلية وضواحيها:
+            </p>
+            <div className="flex flex-wrap gap-1.5 pt-1">
+              {VILLAGES.map((village) => (
+                <span
+                  key={village}
+                  className="bg-slate-800 text-slate-300 text-[11px] px-2 py-0.5 rounded-md font-medium"
+                >
+                  {village}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Payment & Security */}
+          <div className="space-y-3">
+            <h4 className="text-sm font-black text-white">طرق الدفع والأمان</h4>
+            <p className="text-xs text-slate-400 leading-relaxed">
+              العربون لتأكيد الحجز: فودافون كاش أو إنستاباي. باقي الحساب يتم دفعه عند الاستلام بعد المعاينة مع المندوب.
+            </p>
+            <div className="flex flex-wrap gap-2 pt-1">
+              <span className="bg-slate-800 border border-slate-700 text-slate-300 text-xs px-2.5 py-1 rounded-md font-bold">
+                📱 فودافون كاش
+              </span>
+              <span className="bg-slate-800 border border-slate-700 text-slate-300 text-xs px-2.5 py-1 rounded-md font-bold">
+                ⚡ إنستاباي InstaPay
+              </span>
+              <span className="bg-slate-800 border border-slate-700 text-slate-300 text-xs px-2.5 py-1 rounded-md font-bold">
+                💵 كاش عند الاستلام
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Bar */}
+        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-3">
+          <p font-bold="true" suppressHydrationWarning>
+            جميع الحقوق محفوظة منصة بالجملة BelGomla © {currentYear}
+          </p>
+          <div className="flex items-center gap-4 text-slate-400 font-medium">
+            <Link href="/" className="hover:text-white transition-colors">
+              الرئيسية
+            </Link>
+            <span>•</span>
+            <Link href="/login" className="hover:text-white transition-colors">
+              تسجيل الدخول
+            </Link>
+            <span>•</span>
+            <Link href="/register" className="hover:text-white transition-colors">
+              إنشاء حساب
+            </Link>
+          </div>
+        </div>
+      </div>
     </footer>
   );
 }
+

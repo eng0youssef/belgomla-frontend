@@ -38,6 +38,7 @@ export interface ProductResponse {
   cartonCapacity: number;
   maxReferrals: number;
   referralDiscountPerReferral: number;
+  depositAmount: number;
   isActive: boolean;
 }
 
@@ -90,7 +91,9 @@ export interface CreateProductRequest {
   cartonCapacity: number;
   maxReferrals: number;
   referralDiscountPerReferral: number;
+  depositAmount: number;
 }
+
 
 export interface AdminLoginRequest {
   username: string;

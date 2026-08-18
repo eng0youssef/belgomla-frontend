@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ShoppingBag, MessageCircle, User } from "lucide-react";
-import { motion } from "framer-motion";
+import { ShoppingBag, MessageCircle, User, ShieldCheck } from "lucide-react";
 import { whatsappChatUrl } from "@/lib/utils";
 import { getCustomerToken } from "@/services/api-client";
+import { SUPPORT_PHONE } from "@/lib/constants";
 
 export default function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -16,54 +16,89 @@ export default function Header() {
 
   return (
     <>
-      {/* Urgency Banner */}
-      <motion.div
-        initial={{ y: -40, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        className="bg-gradient-to-r from-red-600 via-rose-500 to-red-600 text-white text-center py-2.5 px-4 text-sm font-black shadow-md"
-      >
-        <span className="urgency-pulse flex items-center justify-center gap-2">
-          <span className="text-lg">🔥</span> 
-          الحق مكانك! كراتين النهاردة بتخلص والتوفير بجد مش هزار!
-          <span className="text-lg">🔥</span>
-        </span>
-      </motion.div>
+      {/* Top Announcement Bar */}
+      <div className="bg-slate-900 text-slate-200 text-xs py-2 px-4 border-b border-slate-800">
+        <div className="max-w-6xl mx-auto flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 font-medium">
+            <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-slate-300 hidden sm:inline">
+              📍 التوصيل: المنصورة، بلقاس، شربين، وجميع مراكز الدقهلية
+            </span>
+            <span className="text-slate-300 sm:hidden">
+              📍 التوصيل لمحافظة الدقهلية
+            </span>
+          </div>
+          <div className="flex items-center gap-3 text-slate-300 text-[11px] sm:text-xs">
+            <span className="flex items-center gap-1 font-bold text-emerald-400">
+              <ShieldCheck className="w-3.5 h-3.5" />
+              معاينة مع المندوب قبل دفع الباقي
+            </span>
+          </div>
+        </div>
+      </div>
 
       {/* Main Header */}
-      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-xl border-b border-emerald-100 shadow-sm">
-        <div className="max-w-lg mx-auto flex items-center justify-between px-4 py-3">
+      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-sm transition-all">
+        <div className="max-w-6xl mx-auto flex items-center justify-between px-4 py-3 sm:py-3.5">
           {/* Brand Logo */}
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-emerald-700 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-200/50 group-hover:scale-105 transition-transform">
-              <ShoppingBag className="w-5 h-5 text-white" />
+            <div className="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white shadow-sm group-hover:scale-105 group-hover:bg-emerald-700 transition-all">
+              <ShoppingBag className="w-5 h-5" />
             </div>
             <div>
-              <h1 className="text-xl font-black text-emerald-800 leading-none mb-0.5 tracking-tight">
-                بالجملة
-              </h1>
-              <p className="text-[11px] text-emerald-600/80 font-black tracking-wider">
-                وفر فلوسك
+              <div className="flex items-center gap-1.5">
+                <span className="text-xl font-black text-slate-900 tracking-tight">
+                  بالجملة
+                </span>
+                <span className="bg-emerald-100 text-emerald-800 text-[10px] font-black px-1.5 py-0.5 rounded-md">
+                  BelGomla
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-500 font-bold leading-none">
+                وفر فرق المحلات في جيبك
               </p>
             </div>
           </Link>
 
+          {/* Center Navigation for Desktop */}
+          <nav className="hidden md:flex items-center gap-6 text-sm font-bold text-slate-600">
+            <Link href="/" className="hover:text-emerald-700 transition-colors">
+              المنتجات المتاحة
+            </Link>
+            <a href="/#how-it-works" className="hover:text-emerald-700 transition-colors">
+              إزاي بنوفرلك؟
+            </a>
+            <a href="/#referrals" className="hover:text-emerald-700 transition-colors">
+              شلة التوفير
+            </a>
+            <a href="/#faqs" className="hover:text-emerald-700 transition-colors">
+              الأسئلة الشائعة
+            </a>
+          </nav>
+
           {/* Right Actions */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
             <a
-              href={whatsappChatUrl("201000000000")}
+              href={whatsappChatUrl(SUPPORT_PHONE, "السلام عليكم، كنت محتاج استفسر عن الطلبات في موقع بالجملة")}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 bg-emerald-50 text-emerald-700 px-3.5 py-2 rounded-full text-xs font-black hover:bg-emerald-100 transition-all hover:scale-105 border border-emerald-200/50"
+              className="flex items-center gap-1.5 bg-[#25D366]/10 text-[#128C7E] hover:bg-[#25D366]/20 px-3.5 py-2 rounded-xl text-xs font-black transition-all border border-[#25D366]/20"
             >
-              <MessageCircle className="w-4 h-4" />
-              تواصل معانا
+              <MessageCircle className="w-4 h-4 text-[#25D366]" />
+              <span className="hidden sm:inline">خدمة العملاء</span>
+              <span className="sm:hidden">واتساب</span>
             </a>
 
             <Link
               href={isLoggedIn ? "/dashboard" : "/login"}
-              className="flex items-center justify-center w-9 h-9 bg-gray-100 text-gray-700 rounded-full hover:bg-emerald-100 hover:text-emerald-700 transition-all"
+              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-black transition-all border ${
+                isLoggedIn
+                  ? "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100"
+                  : "bg-slate-900 text-white border-slate-900 hover:bg-slate-800"
+              }`}
             >
-              <User className="w-4 h-4" />
+              <User className="w-3.5 h-3.5" />
+              <span>{isLoggedIn ? "حسابي والطلبات" : "تسجيل الدخول"}</span>
             </Link>
           </div>
         </div>
@@ -71,3 +106,4 @@ export default function Header() {
     </>
   );
 }
+

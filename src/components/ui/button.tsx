@@ -4,27 +4,27 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-xl text-sm font-bold ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-xl text-sm font-bold ring-offset-background transition-all duration-200 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 select-none",
   {
     variants: {
       variant: {
         default:
-          "bg-gradient-to-r from-emerald-500 to-emerald-700 text-white shadow-lg shadow-emerald-200/50 hover:shadow-xl hover:from-emerald-600 hover:to-emerald-800",
+          "bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm hover:shadow-md hover:shadow-emerald-600/20",
         secondary:
-          "bg-gradient-to-r from-amber-400 to-amber-600 text-white shadow-lg shadow-amber-200/50 hover:shadow-xl hover:from-amber-500 hover:to-amber-700",
+          "bg-amber-500 hover:bg-amber-600 text-white shadow-sm hover:shadow-md hover:shadow-amber-500/20",
         destructive:
-          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+          "bg-red-600 hover:bg-red-700 text-white shadow-sm",
         outline:
-          "border-2 border-emerald-200 bg-white text-emerald-700 hover:bg-emerald-50 hover:border-emerald-300",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
+          "border border-slate-200 bg-white text-slate-800 hover:bg-slate-50 hover:border-slate-300 shadow-sm",
+        ghost: "hover:bg-slate-100 text-slate-700 hover:text-slate-900",
+        link: "text-emerald-700 underline-offset-4 hover:underline",
         whatsapp:
-          "bg-[#25D366] hover:bg-[#20bd5a] text-white shadow-lg shadow-green-200/50",
+          "bg-[#25D366] hover:bg-[#1ebe5d] text-white shadow-sm hover:shadow-md hover:shadow-green-600/20",
       },
       size: {
-        default: "h-11 px-6 py-2",
-        sm: "h-9 rounded-lg px-4",
-        lg: "h-14 rounded-2xl px-8 text-lg",
+        default: "h-11 px-5 py-2.5",
+        sm: "h-9 rounded-lg px-3.5 text-xs",
+        lg: "h-13 rounded-2xl px-6 text-base font-black",
         icon: "h-10 w-10",
       },
     },

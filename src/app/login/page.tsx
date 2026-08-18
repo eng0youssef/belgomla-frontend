@@ -3,12 +3,12 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { ShoppingBag, Lock, Phone, Loader2, AlertCircle } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ShoppingBag, Lock, Phone, Loader2, AlertCircle, ArrowRight, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useCustomerLogin } from "@/hooks/use-customer";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 export default function CustomerLoginPage() {
   const router = useRouter();
@@ -29,33 +29,32 @@ export default function CustomerLoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-emerald-50 via-white to-amber-50">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-sm"
-      >
-        {/* Logo */}
-        <div className="text-center mb-8 cursor-pointer" onClick={() => router.push("/")}>
-          <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-emerald-700 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl shadow-emerald-200/50">
-            <ShoppingBag className="w-8 h-8 text-white" />
-          </div>
-          <h1 className="text-2xl font-black text-gray-900">بالجملة</h1>
-          <p className="text-sm text-gray-500 font-bold">تسجيل الدخول</p>
-        </div>
+    <div className="min-h-screen bg-[#fbfcfd] flex flex-col justify-between" dir="rtl">
+      <div>
+        <Header />
 
-        <Card className="border-0 shadow-2xl">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-lg text-center">أهلاً بك مرة أخرى 👋</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <div className="max-w-md mx-auto px-4 py-12 sm:py-16">
+          <div className="clean-card p-6 sm:p-8 bg-white shadow-lg space-y-6">
+            {/* Header */}
+            <div className="text-center space-y-2">
+              <div className="w-12 h-12 bg-emerald-600 text-white rounded-2xl flex items-center justify-center mx-auto shadow-sm">
+                <ShoppingBag className="w-6 h-6" />
+              </div>
+              <h1 className="text-2xl font-black text-slate-900">
+                تسجيل الدخول لحسابك 👋
+              </h1>
+              <p className="text-xs text-slate-500 font-bold">
+                ادخل رقم موبايلك وكلمة المرور لمتابعة طلباتك
+              </p>
+            </div>
+
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="text-sm font-black text-gray-700 mb-1.5 block">
+                <label className="text-xs font-black text-slate-700 mb-1.5 block">
                   رقم الهاتف (الواتساب)
                 </label>
                 <Input
-                  icon={<Phone className="w-4 h-4" />}
+                  icon={<Phone className="w-4 h-4 text-slate-400" />}
                   value={credentials.phoneNumber}
                   onChange={(e) =>
                     setCredentials({ ...credentials, phoneNumber: e.target.value })
@@ -63,68 +62,74 @@ export default function CustomerLoginPage() {
                   placeholder="01012345678"
                   type="tel"
                   dir="ltr"
+                  className="h-12 bg-slate-50/50"
                   required
                 />
               </div>
+
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label className="text-sm font-black text-gray-700 block">
+                  <label className="text-xs font-black text-slate-700 block">
                     كلمة المرور
                   </label>
                   <Link
                     href="/forgot-password"
-                    className="text-xs text-emerald-600 hover:text-emerald-700 font-bold hover:underline"
+                    className="text-[11px] text-emerald-700 hover:text-emerald-800 font-bold hover:underline"
                   >
                     نسيت كلمة المرور؟
                   </Link>
                 </div>
                 <Input
-                  icon={<Lock className="w-4 h-4" />}
+                  icon={<Lock className="w-4 h-4 text-slate-400" />}
                   type="password"
                   value={credentials.password}
                   onChange={(e) =>
                     setCredentials({ ...credentials, password: e.target.value })
                   }
                   placeholder="••••••••"
+                  className="h-12 bg-slate-50/50"
                   required
                 />
               </div>
 
               {loginMutation.isError && (
-                <div className="flex items-center gap-2 text-sm text-red-600 bg-red-50 p-3 rounded-xl font-bold">
+                <div className="flex items-center gap-2 text-xs text-red-600 bg-red-50 p-3 rounded-xl font-bold">
                   <AlertCircle className="w-4 h-4 flex-shrink-0" />
-                  {loginMutation.error?.message || "بيانات الدخول غلط، أو الحساب مش موجود"}
+                  {loginMutation.error?.message || "بيانات الدخول غير صحيحة، يرجى التأكد والمحاولة ثانية"}
                 </div>
               )}
 
               <Button
                 type="submit"
                 size="lg"
-                className="w-full text-lg font-black"
+                className="w-full text-base font-black h-12 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm mt-2"
                 disabled={loginMutation.isPending}
               >
                 {loginMutation.isPending ? (
                   <span className="flex items-center gap-2">
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    جاري الدخول...
+                    جاري تسجيل الدخول...
                   </span>
                 ) : (
-                  "دخول 🚀"
+                  "دخول للحساب 🚀"
                 )}
               </Button>
-              
-              <div className="text-center mt-4">
-                <p className="text-sm text-gray-500 font-bold">
-                  معندكش حساب؟{" "}
-                  <Link href="/register" className="text-emerald-600 hover:underline">
-                    سجل من هنا
+
+              <div className="text-center pt-2 border-t border-slate-100 mt-4">
+                <p className="text-xs text-slate-500 font-bold">
+                  معندكش حساب لحد دلوقتي؟{" "}
+                  <Link href="/register" className="text-emerald-700 hover:underline font-black">
+                    سجّل حساب جديد في دقيقة
                   </Link>
                 </p>
               </div>
             </form>
-          </CardContent>
-        </Card>
-      </motion.div>
+          </div>
+        </div>
+      </div>
+
+      <Footer />
     </div>
   );
 }
+

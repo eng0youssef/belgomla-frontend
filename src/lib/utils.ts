@@ -20,8 +20,13 @@ export function whatsappShareUrl(text: string): string {
 }
 
 /**
- * Generate a WhatsApp direct chat URL.
+ * Generate a WhatsApp direct chat URL with optional pre-filled text.
  */
-export function whatsappChatUrl(phone: string): string {
-  return `https://wa.me/${phone}`;
+export function whatsappChatUrl(phone: string, text?: string): string {
+  const cleanPhone = phone.replace(/\D/g, "");
+  if (text) {
+    return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`;
+  }
+  return `https://wa.me/${cleanPhone}`;
 }
+

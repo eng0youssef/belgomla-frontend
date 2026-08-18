@@ -27,6 +27,7 @@ export function AdminProductsTab() {
     cartonCapacity: 10,
     maxReferrals: 3,
     referralDiscountPerReferral: 5,
+    depositAmount: 50,
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -62,6 +63,7 @@ export function AdminProductsTab() {
       cartonCapacity: 10,
       maxReferrals: 3,
       referralDiscountPerReferral: 5,
+      depositAmount: 50,
     });
   };
 
@@ -76,6 +78,7 @@ export function AdminProductsTab() {
       cartonCapacity: product.cartonCapacity,
       maxReferrals: product.maxReferrals,
       referralDiscountPerReferral: product.referralDiscountPerReferral,
+      depositAmount: product.depositAmount || 50,
     });
     setIsCreating(true);
   };
@@ -150,6 +153,17 @@ export function AdminProductsTab() {
                   />
                 </div>
                 <div className="space-y-2">
+                  <label className="text-sm font-bold text-amber-800 leading-none">قيمة العربون لتأكيد الحجز (ج.م)</label>
+                  <Input 
+                    type="number" 
+                    required 
+                    value={formData.depositAmount}
+                    onChange={e => setFormData({ ...formData, depositAmount: Number(e.target.value) })}
+                    placeholder="مثال: 50 أو 100"
+                    className="border-amber-300 bg-amber-50/40"
+                  />
+                </div>
+                <div className="space-y-2">
                   <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">أقصى سعر بعد الخصم</label>
                   <Input 
                     type="number" 
@@ -190,7 +204,7 @@ export function AdminProductsTab() {
                 <Button 
                   type="submit" 
                   disabled={createMutation.isPending || updateMutation.isPending} 
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white px-8"
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 font-black"
                 >
                   {createMutation.isPending || updateMutation.isPending 
                     ? "جاري الحفظ..." 
@@ -242,6 +256,7 @@ export function AdminProductsTab() {
               <div className="space-y-1 text-sm text-gray-600">
                 <p>السعر العادي: <span className="line-through">{product.standardPrice} ج</span></p>
                 <p>سعر الجملة: <span className="font-bold text-gray-900">{product.wholesalePrice} ج</span></p>
+                <p className="text-amber-700 font-black">العربون المطلوب: <span>{product.depositAmount || 50} ج.م</span></p>
                 <p>سعة الكارتونة: <span className="font-bold">{product.cartonCapacity} قطعة</span></p>
               </div>
             </CardContent>
@@ -256,3 +271,4 @@ export function AdminProductsTab() {
     </div>
   );
 }
+
