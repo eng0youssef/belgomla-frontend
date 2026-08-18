@@ -67,9 +67,17 @@ export default function CustomerLoginPage() {
                 />
               </div>
               <div>
-                <label className="text-sm font-black text-gray-700 mb-1.5 block">
-                  كلمة المرور
-                </label>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-sm font-black text-gray-700 block">
+                    كلمة المرور
+                  </label>
+                  <Link
+                    href="/forgot-password"
+                    className="text-xs text-emerald-600 hover:text-emerald-700 font-bold hover:underline"
+                  >
+                    نسيت كلمة المرور؟
+                  </Link>
+                </div>
                 <Input
                   icon={<Lock className="w-4 h-4" />}
                   type="password"

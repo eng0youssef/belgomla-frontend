@@ -8,22 +8,22 @@ import {
   ShoppingBag,
   Lock,
   Phone,
-  User,
-  MapPin,
   Loader2,
   AlertCircle,
   ArrowRight,
   ShieldCheck,
   CheckCircle2,
+  KeyRound,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { OtpInput } from "@/components/OtpInput";
 import {
-  useSendRegistrationOtp,
-  useRegisterWithOtp,
-  useRegisterWithFirebase,
+  useSendForgotPasswordOtp,
+  useVerifyForgotPasswordOtp,
+  useResetCustomerPassword,
+  useResetPasswordWithFirebase,
   useResendOtp,
 } from "@/hooks/use-customer";
 import { isFirebaseConfigured } from "@/lib/firebase";
@@ -31,31 +31,30 @@ import {
   sendFirebasePhoneOtp,
   confirmFirebasePhoneOtp,
 } from "@/services/firebase-auth";
-import { VILLAGES } from "@/lib/constants";
 import { OtpPurpose } from "@/types/api";
 
-export default function CustomerRegisterPage() {
+type Step = "PHONE" | "OTP" | "NEW_PASSWORD" | "SUCCESS";
+
+export default function ForgotPasswordPage() {
   const router = useRouter();
-  const sendOtpMutation = useSendRegistrationOtp();
-  const registerWithOtpMutation = useRegisterWithOtp();
-  const registerWithFirebaseMutation = useRegisterWithFirebase();
+  const sendOtpMutation = useSendForgotPasswordOtp();
+  const verifyOtpMutation = useVerifyForgotPasswordOtp();
+  const resetPasswordMutation = useResetCustomerPassword();
+  const resetPasswordWithFirebaseMutation = useResetPasswordWithFirebase();
   const resendOtpMutation = useResendOtp();
 
-  const [step, setStep] = useState<"FORM" | "OTP">("FORM");
+  const [step, setStep] = useState<Step>("PHONE");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [firebaseConfirmation, setFirebaseConfirmation] = useState<any>(null);
+  const [firebaseIdToken, setFirebaseIdToken] = useState<string | null>(null);
   const [isSending, setIsSending] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
 
-  const [formData, setFormData] = useState({
-    fullName: "",
-    phoneNumber: "",
-    villageName: "",
-    password: "",
-    referralCode: "",
-  });
-
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [otpCode, setOtpCode] = useState("");
+  const [resetToken, setResetToken] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   // Validate Egyptian phone number
   const isValidEgyptianPhone = (phone: string) => {
@@ -63,18 +62,14 @@ export default function CustomerRegisterPage() {
     return /^01[0125][0-9]{8}$/.test(cleaned);
   };
 
+  // Step 1: Send OTP to customer's phone
   const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
 
-    const cleanPhone = formData.phoneNumber.trim();
+    const cleanPhone = phoneNumber.trim();
     if (!isValidEgyptianPhone(cleanPhone)) {
       setErrorMessage("يرجى إدخال رقم هاتف مصري صحيح (مثال: 01012345678)");
-      return;
-    }
-
-    if (formData.password.length < 6) {
-      setErrorMessage("كلمة المرور يجب ألا تقل عن 6 أحرف");
       return;
     }
 
@@ -84,24 +79,23 @@ export default function CustomerRegisterPage() {
 
     try {
       if (isUsingFirebase) {
-        // Real SMS via Google Firebase Phone Auth
-        const confirmation = await sendFirebasePhoneOtp(cleanPhone, "recaptcha-container");
+        const confirmation = await sendFirebasePhoneOtp(cleanPhone, "recaptcha-container-fp");
         setFirebaseConfirmation(confirmation);
       } else {
-        // WhatsApp / Backend OTP
         await sendOtpMutation.mutateAsync({ phoneNumber: cleanPhone });
       }
       setStep("OTP");
     } catch (err: any) {
       setErrorMessage(
-        err?.message || "فشل إرسال كود التحقق. يرجى التأكد من البيانات والمحاولة ثانية."
+        err?.message || "لا يوجد حساب مسجل برقم الهاتف هذا أو فشل إرسال الرمز."
       );
     } finally {
       setIsSending(false);
     }
   };
 
-  const handleVerifyAndRegister = async (e?: React.FormEvent) => {
+  // Step 2: Verify OTP
+  const handleVerifyOtp = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     setErrorMessage(null);
 
@@ -116,30 +110,17 @@ export default function CustomerRegisterPage() {
 
     try {
       if (isUsingFirebase && firebaseConfirmation) {
-        // Verify code with Firebase
         const { idToken } = await confirmFirebasePhoneOtp(firebaseConfirmation, otpCode.trim());
-
-        await registerWithFirebaseMutation.mutateAsync({
-          fullName: formData.fullName.trim(),
-          phoneNumber: formData.phoneNumber.trim(),
-          villageName: formData.villageName,
-          password: formData.password,
-          firebaseIdToken: idToken,
-          referralCode: formData.referralCode.trim() || null,
-        });
+        setFirebaseIdToken(idToken);
+        setStep("NEW_PASSWORD");
       } else {
-        // WhatsApp / Backend verification
-        await registerWithOtpMutation.mutateAsync({
-          fullName: formData.fullName.trim(),
-          phoneNumber: formData.phoneNumber.trim(),
-          villageName: formData.villageName,
-          password: formData.password,
+        const res = await verifyOtpMutation.mutateAsync({
+          phoneNumber: phoneNumber.trim(),
           otpCode: otpCode.trim(),
-          referralCode: formData.referralCode.trim() || null,
         });
+        setResetToken(res.resetToken);
+        setStep("NEW_PASSWORD");
       }
-
-      router.push("/dashboard");
     } catch (err: any) {
       setErrorMessage(err?.message || "كود التحقق غير صحيح أو انتهت صلاحيته.");
     } finally {
@@ -147,20 +128,21 @@ export default function CustomerRegisterPage() {
     }
   };
 
+  // Resend OTP
   const handleResend = async () => {
     setErrorMessage(null);
     const isUsingFirebase = process.env.NEXT_PUBLIC_OTP_METHOD === "firebase" && isFirebaseConfigured();
     try {
       if (isUsingFirebase) {
         const confirmation = await sendFirebasePhoneOtp(
-          formData.phoneNumber.trim(),
-          "recaptcha-container"
+          phoneNumber.trim(),
+          "recaptcha-container-fp"
         );
         setFirebaseConfirmation(confirmation);
       } else {
         await resendOtpMutation.mutateAsync({
-          phoneNumber: formData.phoneNumber.trim(),
-          purpose: OtpPurpose.Registration,
+          phoneNumber: phoneNumber.trim(),
+          purpose: OtpPurpose.PasswordReset,
         });
       }
     } catch (err: any) {
@@ -169,7 +151,52 @@ export default function CustomerRegisterPage() {
     }
   };
 
-  const loading = isSending || isVerifying || sendOtpMutation.isPending || registerWithOtpMutation.isPending || registerWithFirebaseMutation.isPending;
+  // Step 3: Reset password
+  const handleResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrorMessage(null);
+
+    if (newPassword.length < 6) {
+      setErrorMessage("كلمة المرور يجب ألا تقل عن 6 أحرف.");
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      setErrorMessage("كلمتا المرور غير متطابقتين.");
+      return;
+    }
+
+    try {
+      if (isFirebaseConfigured() && firebaseIdToken) {
+        await resetPasswordWithFirebaseMutation.mutateAsync({
+          phoneNumber: phoneNumber.trim(),
+          firebaseIdToken,
+          newPassword,
+        });
+      } else {
+        await resetPasswordMutation.mutateAsync({
+          phoneNumber: phoneNumber.trim(),
+          resetToken,
+          newPassword,
+        });
+      }
+
+      setStep("SUCCESS");
+      setTimeout(() => {
+        router.push("/dashboard");
+      }, 2000);
+    } catch (err: any) {
+      setErrorMessage(err?.message || "فشل تغيير كلمة المرور. يرجى إعادة المحاولة.");
+    }
+  };
+
+  const loading =
+    isSending ||
+    isVerifying ||
+    sendOtpMutation.isPending ||
+    verifyOtpMutation.isPending ||
+    resetPasswordMutation.isPending ||
+    resetPasswordWithFirebaseMutation.isPending;
 
   return (
     <div className="min-h-screen flex items-center justify-center py-10 px-4 bg-gradient-to-br from-emerald-50 via-white to-amber-50">
@@ -179,7 +206,7 @@ export default function CustomerRegisterPage() {
         className="w-full max-w-sm"
       >
         {/* Invisible reCAPTCHA container for Firebase */}
-        <div id="recaptcha-container"></div>
+        <div id="recaptcha-container-fp"></div>
 
         {/* Logo */}
         <div className="text-center mb-8 cursor-pointer" onClick={() => router.push("/")}>
@@ -187,20 +214,34 @@ export default function CustomerRegisterPage() {
             <ShoppingBag className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-2xl font-black text-gray-900">بالجملة</h1>
-          <p className="text-sm text-gray-500 font-bold">
-            {step === "FORM" ? "إنشاء حساب جديد وتأكيد الموبايل" : "تأكيد ملكية رقم الهاتف"}
-          </p>
+          <p className="text-sm text-gray-500 font-bold">استعادة كلمة المرور</p>
         </div>
 
         <Card className="border-0 shadow-2xl overflow-hidden">
           <CardHeader className="pb-4">
             <CardTitle className="text-lg text-center flex items-center justify-center gap-2">
-              {step === "FORM" ? (
-                <>أهلاً بك في بالجملة 🎉</>
-              ) : (
+              {step === "PHONE" && (
+                <>
+                  <KeyRound className="w-5 h-5 text-emerald-600" />
+                  استعادة الحساب
+                </>
+              )}
+              {step === "OTP" && (
                 <>
                   <ShieldCheck className="w-5 h-5 text-emerald-600" />
                   رمز التحقق (OTP)
+                </>
+              )}
+              {step === "NEW_PASSWORD" && (
+                <>
+                  <Lock className="w-5 h-5 text-emerald-600" />
+                  كلمة المرور الجديدة
+                </>
+              )}
+              {step === "SUCCESS" && (
+                <>
+                  <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+                  تم التحديث بنجاح
                 </>
               )}
             </CardTitle>
@@ -216,29 +257,19 @@ export default function CustomerRegisterPage() {
             )}
 
             <AnimatePresence mode="wait">
-              {step === "FORM" ? (
+              {/* STEP 1: PHONE NUMBER */}
+              {step === "PHONE" && (
                 <motion.form
-                  key="form-step"
+                  key="phone-step"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 20 }}
                   onSubmit={handleSendOtp}
                   className="space-y-4"
                 >
-                  <div>
-                    <label className="text-sm font-black text-gray-700 mb-1.5 block">
-                      الاسم بالكامل
-                    </label>
-                    <Input
-                      icon={<User className="w-4 h-4" />}
-                      value={formData.fullName}
-                      onChange={(e) =>
-                        setFormData({ ...formData, fullName: e.target.value })
-                      }
-                      placeholder="محمد أحمد"
-                      required
-                    />
-                  </div>
+                  <p className="text-sm text-gray-600 font-bold text-center leading-relaxed">
+                    أدخل رقم الهاتف المسجل به حسابك وسنرسل لك كود تحقق لاستعادة حسابك:
+                  </p>
 
                   <div>
                     <label className="text-sm font-black text-gray-700 mb-1.5 block">
@@ -246,75 +277,13 @@ export default function CustomerRegisterPage() {
                     </label>
                     <Input
                       icon={<Phone className="w-4 h-4" />}
-                      value={formData.phoneNumber}
-                      onChange={(e) =>
-                        setFormData({ ...formData, phoneNumber: e.target.value })
-                      }
+                      value={phoneNumber}
+                      onChange={(e) => setPhoneNumber(e.target.value)}
                       placeholder="01012345678"
                       type="tel"
                       dir="ltr"
                       required
                     />
-                    <p className="text-[11px] text-gray-500 mt-1 font-bold">
-                      *سنرسل كود تحقق سداسي (SMS OTP) للتأكد من ملكيتك للرقم
-                    </p>
-                  </div>
-
-                  <div>
-                    <label className="text-sm font-black text-gray-700 mb-1.5 block">
-                      المنطقة / القرية
-                    </label>
-                    <div className="relative">
-                      <MapPin className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-gray-500" />
-                      <select
-                        value={formData.villageName}
-                        onChange={(e) =>
-                          setFormData({ ...formData, villageName: e.target.value })
-                        }
-                        className="w-full h-11 pl-4 pr-10 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all outline-none"
-                        required
-                      >
-                        <option value="">اختار منطقتك...</option>
-                        {VILLAGES.map((v) => (
-                          <option key={v} value={v}>
-                            {v}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="text-sm font-black text-gray-700 mb-1.5 block">
-                      كلمة المرور
-                    </label>
-                    <Input
-                      icon={<Lock className="w-4 h-4" />}
-                      type="password"
-                      value={formData.password}
-                      onChange={(e) =>
-                        setFormData({ ...formData, password: e.target.value })
-                      }
-                      placeholder="••••••••"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-sm font-black text-gray-700 mb-1.5 block">
-                      كود دعوة صديق (لو معاك)
-                    </label>
-                    <Input
-                      value={formData.referralCode}
-                      onChange={(e) =>
-                        setFormData({ ...formData, referralCode: e.target.value })
-                      }
-                      placeholder="مثال: ABC123XYZ"
-                      dir="ltr"
-                    />
-                    <p className="text-[11px] text-gray-500 mt-1 font-bold">
-                      *هذا الكود خاص بالصديق الذي دعاك. السيستم سيقوم بإنشاء كودك الخاص تلقائياً بعد التسجيل.
-                    </p>
                   </div>
 
                   <Button
@@ -326,33 +295,36 @@ export default function CustomerRegisterPage() {
                     {loading ? (
                       <span className="flex items-center gap-2">
                         <Loader2 className="w-4 h-4 animate-spin" />
-                        جاري إرسال الرمز...
+                        جاري الإرسال...
                       </span>
                     ) : (
-                      "متابعة وإرسال كود التحقق 📲"
+                      "إرسال كود التحقق 📲"
                     )}
                   </Button>
 
                   <div className="text-center mt-4">
                     <p className="text-sm text-gray-500 font-bold">
-                      عندك حساب بالفعل؟{" "}
+                      تذكرت كلمة المرور؟{" "}
                       <Link href="/login" className="text-emerald-600 hover:underline">
-                        سجل دخول
+                        تسجيل الدخول
                       </Link>
                     </p>
                   </div>
                 </motion.form>
-              ) : (
+              )}
+
+              {/* STEP 2: OTP VERIFICATION */}
+              {step === "OTP" && (
                 <motion.form
                   key="otp-step"
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -20 }}
-                  onSubmit={handleVerifyAndRegister}
+                  onSubmit={handleVerifyOtp}
                   className="space-y-5"
                 >
                   <p className="text-sm text-center text-gray-600 font-bold leading-relaxed">
-                    أدخل كود التحقق المكون من 6 أرقام المرسل إلى هاتفك لتأكيد إنشاء الحساب:
+                    أدخل كود التحقق المكون من 6 أرقام المستلم على هاتفك:
                   </p>
 
                   <OtpInput
@@ -364,7 +336,7 @@ export default function CustomerRegisterPage() {
                     }}
                     onResend={handleResend}
                     isResending={resendOtpMutation.isPending}
-                    phoneNumber={formData.phoneNumber}
+                    phoneNumber={phoneNumber}
                     disabled={loading}
                   />
 
@@ -377,13 +349,10 @@ export default function CustomerRegisterPage() {
                     {loading ? (
                       <span className="flex items-center gap-2">
                         <Loader2 className="w-4 h-4 animate-spin" />
-                        جاري التأكيد والتسجيل...
+                        جاري التحقق...
                       </span>
                     ) : (
-                      <span className="flex items-center justify-center gap-2">
-                        <CheckCircle2 className="w-5 h-5" />
-                        تأكيد وإنشاء الحساب 🚀
-                      </span>
+                      "تأكيد الرمز والمتابعة ✅"
                     )}
                   </Button>
 
@@ -391,17 +360,100 @@ export default function CustomerRegisterPage() {
                     <button
                       type="button"
                       onClick={() => {
-                        setStep("FORM");
+                        setStep("PHONE");
                         setOtpCode("");
                         setErrorMessage(null);
                       }}
                       className="text-xs text-gray-500 hover:text-emerald-700 font-bold inline-flex items-center gap-1 transition-colors"
                     >
                       <ArrowRight className="w-3.5 h-3.5" />
-                      تعديل رقم الهاتف أو البيانات
+                      تعديل رقم الهاتف
                     </button>
                   </div>
                 </motion.form>
+              )}
+
+              {/* STEP 3: NEW PASSWORD */}
+              {step === "NEW_PASSWORD" && (
+                <motion.form
+                  key="password-step"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  onSubmit={handleResetPassword}
+                  className="space-y-4"
+                >
+                  <p className="text-sm text-gray-600 font-bold text-center leading-relaxed">
+                    اكتب كلمة المرور الجديدة الخاصة بحسابك:
+                  </p>
+
+                  <div>
+                    <label className="text-sm font-black text-gray-700 mb-1.5 block">
+                      كلمة المرور الجديدة
+                    </label>
+                    <Input
+                      icon={<Lock className="w-4 h-4" />}
+                      type="password"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      placeholder="••••••••"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-sm font-black text-gray-700 mb-1.5 block">
+                      تأكيد كلمة المرور الجديدة
+                    </label>
+                    <Input
+                      icon={<Lock className="w-4 h-4" />}
+                      type="password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      placeholder="••••••••"
+                      required
+                    />
+                  </div>
+
+                  <Button
+                    type="submit"
+                    size="lg"
+                    className="w-full text-lg font-black"
+                    disabled={loading}
+                  >
+                    {loading ? (
+                      <span className="flex items-center gap-2">
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        جاري الحفظ...
+                      </span>
+                    ) : (
+                      "حفظ كلمة المرور والدخول 🚀"
+                    )}
+                  </Button>
+                </motion.form>
+              )}
+
+              {/* STEP 4: SUCCESS */}
+              {step === "SUCCESS" && (
+                <motion.div
+                  key="success-step"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="text-center py-6 space-y-4"
+                >
+                  <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto text-emerald-600">
+                    <CheckCircle2 className="w-10 h-10" />
+                  </div>
+                  <h3 className="text-xl font-black text-gray-900">
+                    تم تغيير كلمة المرور بنجاح!
+                  </h3>
+                  <p className="text-sm text-gray-500 font-bold">
+                    جاري توجيهك إلى لوحة التحكم الآن...
+                  </p>
+                  <div className="flex justify-center">
+                    <Loader2 className="w-6 h-6 animate-spin text-emerald-600" />
+                  </div>
+                </motion.div>
               )}
             </AnimatePresence>
           </CardContent>

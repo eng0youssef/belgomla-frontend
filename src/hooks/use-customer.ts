@@ -1,5 +1,17 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { customerLogin, customerRegister, getCustomerDashboard, updateCustomerProfile, cancelCustomerOrder } from "@/services/customer";
+import {
+  customerLogin,
+  customerRegister,
+  sendRegistrationOtp,
+  registerWithOtp,
+  resendOtp,
+  sendForgotPasswordOtp,
+  verifyForgotPasswordOtp,
+  resetCustomerPassword,
+  getCustomerDashboard,
+  updateCustomerProfile,
+  cancelCustomerOrder,
+} from "@/services/customer";
 import { getCustomerToken, removeCustomerToken } from "@/services/api-client";
 import { useMounted } from "./use-mounted";
 import type {
@@ -8,6 +20,13 @@ import type {
   CustomerAuthResponse,
   CustomerDashboardResponse,
   UpdateCustomerProfileRequest,
+  SendOtpRequest,
+  SendOtpResponse,
+  RegisterWithOtpRequest,
+  ResendOtpRequest,
+  VerifyOtpRequest,
+  VerifyOtpResponse,
+  ResetPasswordRequest,
 } from "@/types/api";
 
 export function useCustomerLogin() {
@@ -30,6 +49,70 @@ export function useCustomerRegister() {
   });
 }
 
+export function useSendRegistrationOtp() {
+  return useMutation<SendOtpResponse, Error, SendOtpRequest>({
+    mutationFn: sendRegistrationOtp,
+  });
+}
+
+export function useRegisterWithOtp() {
+  const queryClient = useQueryClient();
+  return useMutation<CustomerAuthResponse, Error, RegisterWithOtpRequest>({
+    mutationFn: registerWithOtp,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["customer-dashboard"] });
+    },
+  });
+}
+
+export function useResendOtp() {
+  return useMutation<SendOtpResponse, Error, ResendOtpRequest>({
+    mutationFn: resendOtp,
+  });
+}
+
+export function useSendForgotPasswordOtp() {
+  return useMutation<SendOtpResponse, Error, SendOtpRequest>({
+    mutationFn: sendForgotPasswordOtp,
+  });
+}
+
+export function useVerifyForgotPasswordOtp() {
+  return useMutation<VerifyOtpResponse, Error, VerifyOtpRequest>({
+    mutationFn: verifyForgotPasswordOtp,
+  });
+}
+
+export function useResetCustomerPassword() {
+  const queryClient = useQueryClient();
+  return useMutation<CustomerAuthResponse, Error, ResetPasswordRequest>({
+    mutationFn: resetCustomerPassword,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["customer-dashboard"] });
+    },
+  });
+}
+
+export function useRegisterWithFirebase() {
+  const queryClient = useQueryClient();
+  return useMutation<CustomerAuthResponse, Error, import("@/types/api").RegisterWithFirebaseRequest>({
+    mutationFn: (data) => import("@/services/customer").then((m) => m.registerWithFirebase(data)),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["customer-dashboard"] });
+    },
+  });
+}
+
+export function useResetPasswordWithFirebase() {
+  const queryClient = useQueryClient();
+  return useMutation<CustomerAuthResponse, Error, import("@/types/api").ResetPasswordWithFirebaseRequest>({
+    mutationFn: (data) => import("@/services/customer").then((m) => m.resetPasswordWithFirebase(data)),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["customer-dashboard"] });
+    },
+  });
+}
+
 export function useCustomerDashboard() {
   const mounted = useMounted();
   return useQuery<CustomerDashboardResponse, Error>({
@@ -40,7 +123,6 @@ export function useCustomerDashboard() {
   });
 }
 
-
 export function useCustomerLogout() {
   const queryClient = useQueryClient();
   return useMutation<void, Error, void>({
@@ -48,7 +130,6 @@ export function useCustomerLogout() {
       removeCustomerToken();
     },
     onSuccess: () => {
-      // Clear ALL cached query data to prevent data leakage between sessions
       queryClient.clear();
     },
   });

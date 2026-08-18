@@ -5,6 +5,13 @@ import type {
   CustomerAuthResponse,
   CustomerDashboardResponse,
   UpdateCustomerProfileRequest,
+  SendOtpRequest,
+  SendOtpResponse,
+  RegisterWithOtpRequest,
+  ResendOtpRequest,
+  VerifyOtpRequest,
+  VerifyOtpResponse,
+  ResetPasswordRequest,
 } from "@/types/api";
 import {
   apiClient,
@@ -42,7 +49,7 @@ export async function customerLogin(
 }
 
 /**
- * Customer register — creates a new account or adds password to existing one.
+ * Customer register (legacy direct) — creates a new account or adds password to existing one.
  */
 export async function customerRegister(
   data: CustomerRegisterRequest
@@ -68,6 +75,178 @@ export async function customerRegister(
     }
     throw error;
   }
+}
+
+/**
+ * Send registration OTP to customer's mobile number.
+ */
+export async function sendRegistrationOtp(
+  data: SendOtpRequest
+): Promise<SendOtpResponse> {
+  const response = await apiClient<ApiResponse<SendOtpResponse>>(
+    "/auth/customer/register/send-otp",
+    {
+      method: "POST",
+      body: data,
+    }
+  );
+
+  if (!response.success || !response.data) {
+    throw new Error(response.message || "فشل إرسال كود التحقق");
+  }
+
+  return response.data;
+}
+
+/**
+ * Verify OTP and register customer account.
+ */
+export async function registerWithOtp(
+  data: RegisterWithOtpRequest
+): Promise<CustomerAuthResponse> {
+  const response = await apiClient<ApiResponse<CustomerAuthResponse>>(
+    "/auth/customer/register/verify-and-register",
+    {
+      method: "POST",
+      body: data,
+    }
+  );
+
+  if (!response.success || !response.data) {
+    throw new Error(response.message || "فشل تأكيد الرمز وتسجيل الحساب");
+  }
+
+  setCustomerToken(response.data.token);
+  return response.data;
+}
+
+/**
+ * Resend OTP (Registration or PasswordReset).
+ */
+export async function resendOtp(
+  data: ResendOtpRequest
+): Promise<SendOtpResponse> {
+  const response = await apiClient<ApiResponse<SendOtpResponse>>(
+    "/auth/customer/resend-otp",
+    {
+      method: "POST",
+      body: data,
+    }
+  );
+
+  if (!response.success || !response.data) {
+    throw new Error(response.message || "فشل إعادة إرسال كود التحقق");
+  }
+
+  return response.data;
+}
+
+/**
+ * Send forgot password OTP to customer's mobile number.
+ */
+export async function sendForgotPasswordOtp(
+  data: SendOtpRequest
+): Promise<SendOtpResponse> {
+  const response = await apiClient<ApiResponse<SendOtpResponse>>(
+    "/auth/customer/forgot-password/send-otp",
+    {
+      method: "POST",
+      body: data,
+    }
+  );
+
+  if (!response.success || !response.data) {
+    throw new Error(response.message || "لا يوجد حساب مسجل بهذا الرقم");
+  }
+
+  return response.data;
+}
+
+/**
+ * Verify forgot password OTP and receive reset token.
+ */
+export async function verifyForgotPasswordOtp(
+  data: VerifyOtpRequest
+): Promise<VerifyOtpResponse> {
+  const response = await apiClient<ApiResponse<VerifyOtpResponse>>(
+    "/auth/customer/forgot-password/verify-otp",
+    {
+      method: "POST",
+      body: data,
+    }
+  );
+
+  if (!response.success || !response.data) {
+    throw new Error(response.message || "كود التحقق غير صحيح أو انتهت صلاحيته");
+  }
+
+  return response.data;
+}
+
+/**
+ * Set new password using reset token.
+ */
+export async function resetCustomerPassword(
+  data: ResetPasswordRequest
+): Promise<CustomerAuthResponse> {
+  const response = await apiClient<ApiResponse<CustomerAuthResponse>>(
+    "/auth/customer/forgot-password/reset",
+    {
+      method: "POST",
+      body: data,
+    }
+  );
+
+  if (!response.success || !response.data) {
+    throw new Error(response.message || "فشل تغيير كلمة المرور");
+  }
+
+  setCustomerToken(response.data.token);
+  return response.data;
+}
+
+/**
+ * Register with Firebase verified ID token.
+ */
+export async function registerWithFirebase(
+  data: import("@/types/api").RegisterWithFirebaseRequest
+): Promise<CustomerAuthResponse> {
+  const response = await apiClient<ApiResponse<CustomerAuthResponse>>(
+    "/auth/customer/register/firebase",
+    {
+      method: "POST",
+      body: data,
+    }
+  );
+
+  if (!response.success || !response.data) {
+    throw new Error(response.message || "فشل التسجيل عبر Firebase");
+  }
+
+  setCustomerToken(response.data.token);
+  return response.data;
+}
+
+/**
+ * Reset password with Firebase verified ID token.
+ */
+export async function resetPasswordWithFirebase(
+  data: import("@/types/api").ResetPasswordWithFirebaseRequest
+): Promise<CustomerAuthResponse> {
+  const response = await apiClient<ApiResponse<CustomerAuthResponse>>(
+    "/auth/customer/forgot-password/firebase-reset",
+    {
+      method: "POST",
+      body: data,
+    }
+  );
+
+  if (!response.success || !response.data) {
+    throw new Error(response.message || "فشل تعيين كلمة المرور عبر Firebase");
+  }
+
+  setCustomerToken(response.data.token);
+  return response.data;
 }
 
 /**

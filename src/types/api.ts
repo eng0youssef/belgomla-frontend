@@ -129,7 +129,67 @@ export interface DepositConfirmationResponse {
   newCartonCreatedId?: string | null;
 }
 
-// ─── Customer Auth DTOs ──────────────────────────────────────
+// ─── Customer Auth & OTP DTOs ──────────────────────────────
+
+export enum OtpPurpose {
+  Registration = "Registration",
+  PasswordReset = "PasswordReset",
+}
+
+export interface SendOtpRequest {
+  phoneNumber: string;
+}
+
+export interface SendOtpResponse {
+  cooldownSeconds: number;
+  message: string;
+}
+
+export interface RegisterWithOtpRequest {
+  fullName: string;
+  phoneNumber: string;
+  villageName: string;
+  password: string;
+  otpCode: string;
+  referralCode?: string | null;
+}
+
+export interface ResendOtpRequest {
+  phoneNumber: string;
+  purpose: OtpPurpose;
+}
+
+export interface VerifyOtpRequest {
+  phoneNumber: string;
+  otpCode: string;
+}
+
+export interface VerifyOtpResponse {
+  resetToken: string;
+  expiresAt: string;
+  message: string;
+}
+
+export interface ResetPasswordRequest {
+  phoneNumber: string;
+  resetToken: string;
+  newPassword: string;
+}
+
+export interface RegisterWithFirebaseRequest {
+  fullName: string;
+  phoneNumber: string;
+  villageName: string;
+  password: string;
+  firebaseIdToken: string;
+  referralCode?: string | null;
+}
+
+export interface ResetPasswordWithFirebaseRequest {
+  phoneNumber: string;
+  firebaseIdToken: string;
+  newPassword: string;
+}
 
 export interface CustomerRegisterRequest {
   fullName: string;
