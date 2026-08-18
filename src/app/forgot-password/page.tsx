@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   ShoppingBag,
   Lock,
-  Phone,
+  Mail,
   Loader2,
   AlertCircle,
   ArrowRight,
@@ -23,74 +23,50 @@ import {
   useSendForgotPasswordOtp,
   useVerifyForgotPasswordOtp,
   useResetCustomerPassword,
-  useResetPasswordWithFirebase,
   useResendOtp,
 } from "@/hooks/use-customer";
-import { isFirebaseConfigured } from "@/lib/firebase";
-import {
-  sendFirebasePhoneOtp,
-  confirmFirebasePhoneOtp,
-} from "@/services/firebase-auth";
 import { OtpPurpose } from "@/types/api";
 
-type Step = "PHONE" | "OTP" | "NEW_PASSWORD" | "SUCCESS";
+type Step = "EMAIL" | "OTP" | "NEW_PASSWORD" | "SUCCESS";
 
 export default function ForgotPasswordPage() {
   const router = useRouter();
   const sendOtpMutation = useSendForgotPasswordOtp();
   const verifyOtpMutation = useVerifyForgotPasswordOtp();
   const resetPasswordMutation = useResetCustomerPassword();
-  const resetPasswordWithFirebaseMutation = useResetPasswordWithFirebase();
   const resendOtpMutation = useResendOtp();
 
-  const [step, setStep] = useState<Step>("PHONE");
+  const [step, setStep] = useState<Step>("EMAIL");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [firebaseConfirmation, setFirebaseConfirmation] = useState<any>(null);
-  const [firebaseIdToken, setFirebaseIdToken] = useState<string | null>(null);
-  const [isSending, setIsSending] = useState(false);
-  const [isVerifying, setIsVerifying] = useState(false);
 
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [email, setEmail] = useState("");
   const [otpCode, setOtpCode] = useState("");
   const [resetToken, setResetToken] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  // Validate Egyptian phone number
-  const isValidEgyptianPhone = (phone: string) => {
-    const cleaned = phone.trim().replace(/[\s\-()]/g, "");
-    return /^01[0125][0-9]{8}$/.test(cleaned);
+  const isValidEmail = (e: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.trim());
   };
 
-  // Step 1: Send OTP to customer's phone
+  // Step 1: Send OTP to customer's email
   const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
 
-    const cleanPhone = phoneNumber.trim();
-    if (!isValidEgyptianPhone(cleanPhone)) {
-      setErrorMessage("يرجى إدخال رقم هاتف مصري صحيح (مثال: 01012345678)");
+    const cleanEmail = email.trim().toLowerCase();
+    if (!isValidEmail(cleanEmail)) {
+      setErrorMessage("يرجى إدخال بريد إلكتروني صحيح (مثال: example@gmail.com)");
       return;
     }
 
-    setIsSending(true);
-
-    const isUsingFirebase = process.env.NEXT_PUBLIC_OTP_METHOD === "firebase" && isFirebaseConfigured();
-
     try {
-      if (isUsingFirebase) {
-        const confirmation = await sendFirebasePhoneOtp(cleanPhone, "recaptcha-container-fp");
-        setFirebaseConfirmation(confirmation);
-      } else {
-        await sendOtpMutation.mutateAsync({ phoneNumber: cleanPhone });
-      }
+      await sendOtpMutation.mutateAsync({ email: cleanEmail });
       setStep("OTP");
     } catch (err: any) {
       setErrorMessage(
-        err?.message || "لا يوجد حساب مسجل برقم الهاتف هذا أو فشل إرسال الرمز."
+        err?.message || "لا يوجد حساب مسجل بهذا البريد الإلكتروني أو فشل إرسال الرمز."
       );
-    } finally {
-      setIsSending(false);
     }
   };
 
@@ -104,47 +80,26 @@ export default function ForgotPasswordPage() {
       return;
     }
 
-    setIsVerifying(true);
-
-    const isUsingFirebase = process.env.NEXT_PUBLIC_OTP_METHOD === "firebase" && isFirebaseConfigured();
-
     try {
-      if (isUsingFirebase && firebaseConfirmation) {
-        const { idToken } = await confirmFirebasePhoneOtp(firebaseConfirmation, otpCode.trim());
-        setFirebaseIdToken(idToken);
-        setStep("NEW_PASSWORD");
-      } else {
-        const res = await verifyOtpMutation.mutateAsync({
-          phoneNumber: phoneNumber.trim(),
-          otpCode: otpCode.trim(),
-        });
-        setResetToken(res.resetToken);
-        setStep("NEW_PASSWORD");
-      }
+      const res = await verifyOtpMutation.mutateAsync({
+        email: email.trim().toLowerCase(),
+        otpCode: otpCode.trim(),
+      });
+      setResetToken(res.resetToken);
+      setStep("NEW_PASSWORD");
     } catch (err: any) {
       setErrorMessage(err?.message || "كود التحقق غير صحيح أو انتهت صلاحيته.");
-    } finally {
-      setIsVerifying(false);
     }
   };
 
   // Resend OTP
   const handleResend = async () => {
     setErrorMessage(null);
-    const isUsingFirebase = process.env.NEXT_PUBLIC_OTP_METHOD === "firebase" && isFirebaseConfigured();
     try {
-      if (isUsingFirebase) {
-        const confirmation = await sendFirebasePhoneOtp(
-          phoneNumber.trim(),
-          "recaptcha-container-fp"
-        );
-        setFirebaseConfirmation(confirmation);
-      } else {
-        await resendOtpMutation.mutateAsync({
-          phoneNumber: phoneNumber.trim(),
-          purpose: OtpPurpose.PasswordReset,
-        });
-      }
+      await resendOtpMutation.mutateAsync({
+        email: email.trim().toLowerCase(),
+        purpose: OtpPurpose.PasswordReset,
+      });
     } catch (err: any) {
       setErrorMessage(err?.message || "فشل إعادة إرسال الكود. يرجى الانتظار والمحاولة ثانية.");
       throw err;
@@ -167,19 +122,11 @@ export default function ForgotPasswordPage() {
     }
 
     try {
-      if (isFirebaseConfigured() && firebaseIdToken) {
-        await resetPasswordWithFirebaseMutation.mutateAsync({
-          phoneNumber: phoneNumber.trim(),
-          firebaseIdToken,
-          newPassword,
-        });
-      } else {
-        await resetPasswordMutation.mutateAsync({
-          phoneNumber: phoneNumber.trim(),
-          resetToken,
-          newPassword,
-        });
-      }
+      await resetPasswordMutation.mutateAsync({
+        email: email.trim().toLowerCase(),
+        resetToken,
+        newPassword,
+      });
 
       setStep("SUCCESS");
       setTimeout(() => {
@@ -191,12 +138,9 @@ export default function ForgotPasswordPage() {
   };
 
   const loading =
-    isSending ||
-    isVerifying ||
     sendOtpMutation.isPending ||
     verifyOtpMutation.isPending ||
-    resetPasswordMutation.isPending ||
-    resetPasswordWithFirebaseMutation.isPending;
+    resetPasswordMutation.isPending;
 
   return (
     <div className="min-h-screen flex items-center justify-center py-10 px-4 bg-gradient-to-br from-emerald-50 via-white to-amber-50">
@@ -205,9 +149,6 @@ export default function ForgotPasswordPage() {
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-sm"
       >
-        {/* Invisible reCAPTCHA container for Firebase */}
-        <div id="recaptcha-container-fp"></div>
-
         {/* Logo */}
         <div className="text-center mb-8 cursor-pointer" onClick={() => router.push("/")}>
           <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-emerald-700 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl shadow-emerald-200/50">
@@ -220,7 +161,7 @@ export default function ForgotPasswordPage() {
         <Card className="border-0 shadow-2xl overflow-hidden">
           <CardHeader className="pb-4">
             <CardTitle className="text-lg text-center flex items-center justify-center gap-2">
-              {step === "PHONE" && (
+              {step === "EMAIL" && (
                 <>
                   <KeyRound className="w-5 h-5 text-emerald-600" />
                   استعادة الحساب
@@ -257,10 +198,10 @@ export default function ForgotPasswordPage() {
             )}
 
             <AnimatePresence mode="wait">
-              {/* STEP 1: PHONE NUMBER */}
-              {step === "PHONE" && (
+              {/* STEP 1: EMAIL */}
+              {step === "EMAIL" && (
                 <motion.form
-                  key="phone-step"
+                  key="email-step"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 20 }}
@@ -268,19 +209,19 @@ export default function ForgotPasswordPage() {
                   className="space-y-4"
                 >
                   <p className="text-sm text-gray-600 font-bold text-center leading-relaxed">
-                    أدخل رقم الهاتف المسجل به حسابك وسنرسل لك كود تحقق لاستعادة حسابك:
+                    أدخل بريدك الإلكتروني المسجل به حسابك وسنرسل لك رمز تحقق لاستعادة حسابك:
                   </p>
 
                   <div>
                     <label className="text-sm font-black text-gray-700 mb-1.5 block">
-                      رقم الهاتف (الواتساب)
+                      البريد الإلكتروني (Gmail)
                     </label>
                     <Input
-                      icon={<Phone className="w-4 h-4" />}
-                      value={phoneNumber}
-                      onChange={(e) => setPhoneNumber(e.target.value)}
-                      placeholder="01012345678"
-                      type="tel"
+                      icon={<Mail className="w-4 h-4" />}
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="name@gmail.com"
+                      type="email"
                       dir="ltr"
                       required
                     />
@@ -298,7 +239,7 @@ export default function ForgotPasswordPage() {
                         جاري الإرسال...
                       </span>
                     ) : (
-                      "إرسال كود التحقق 📲"
+                      "إرسال كود التحقق 📩"
                     )}
                   </Button>
 
@@ -324,7 +265,7 @@ export default function ForgotPasswordPage() {
                   className="space-y-5"
                 >
                   <p className="text-sm text-center text-gray-600 font-bold leading-relaxed">
-                    أدخل كود التحقق المكون من 6 أرقام المستلم على هاتفك:
+                    أدخل كود التحقق المكون من 6 أرقام المستلم على بريدك الإلكتروني:
                   </p>
 
                   <OtpInput
@@ -336,9 +277,13 @@ export default function ForgotPasswordPage() {
                     }}
                     onResend={handleResend}
                     isResending={resendOtpMutation.isPending}
-                    phoneNumber={phoneNumber}
+                    email={email}
                     disabled={loading}
                   />
+
+                  <p className="text-[11px] text-gray-500 text-center font-bold">
+                    💡 لم تجد الرسالة؟ تفقد مجلد الرسائل غير المرغوب فيها (Spam).
+                  </p>
 
                   <Button
                     type="submit"
@@ -360,14 +305,14 @@ export default function ForgotPasswordPage() {
                     <button
                       type="button"
                       onClick={() => {
-                        setStep("PHONE");
+                        setStep("EMAIL");
                         setOtpCode("");
                         setErrorMessage(null);
                       }}
                       className="text-xs text-gray-500 hover:text-emerald-700 font-bold inline-flex items-center gap-1 transition-colors"
                     >
                       <ArrowRight className="w-3.5 h-3.5" />
-                      تعديل رقم الهاتف
+                      تعديل البريد الإلكتروني
                     </button>
                   </div>
                 </motion.form>

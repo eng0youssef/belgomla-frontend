@@ -137,7 +137,8 @@ export enum OtpPurpose {
 }
 
 export interface SendOtpRequest {
-  phoneNumber: string;
+  phoneNumber?: string;
+  email?: string;
 }
 
 export interface SendOtpResponse {
@@ -148,6 +149,7 @@ export interface SendOtpResponse {
 export interface RegisterWithOtpRequest {
   fullName: string;
   phoneNumber: string;
+  email?: string;
   villageName: string;
   password: string;
   otpCode: string;
@@ -155,12 +157,14 @@ export interface RegisterWithOtpRequest {
 }
 
 export interface ResendOtpRequest {
-  phoneNumber: string;
+  phoneNumber?: string;
+  email?: string;
   purpose: OtpPurpose;
 }
 
 export interface VerifyOtpRequest {
-  phoneNumber: string;
+  phoneNumber?: string;
+  email?: string;
   otpCode: string;
 }
 
@@ -171,7 +175,8 @@ export interface VerifyOtpResponse {
 }
 
 export interface ResetPasswordRequest {
-  phoneNumber: string;
+  phoneNumber?: string;
+  email?: string;
   resetToken: string;
   newPassword: string;
 }

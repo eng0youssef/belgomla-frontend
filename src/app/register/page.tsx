@@ -10,6 +10,7 @@ import {
   Phone,
   User,
   MapPin,
+  Mail,
   Loader2,
   AlertCircle,
   ArrowRight,
@@ -23,14 +24,8 @@ import { OtpInput } from "@/components/OtpInput";
 import {
   useSendRegistrationOtp,
   useRegisterWithOtp,
-  useRegisterWithFirebase,
   useResendOtp,
 } from "@/hooks/use-customer";
-import { isFirebaseConfigured } from "@/lib/firebase";
-import {
-  sendFirebasePhoneOtp,
-  confirmFirebasePhoneOtp,
-} from "@/services/firebase-auth";
 import { VILLAGES } from "@/lib/constants";
 import { OtpPurpose } from "@/types/api";
 
@@ -38,18 +33,15 @@ export default function CustomerRegisterPage() {
   const router = useRouter();
   const sendOtpMutation = useSendRegistrationOtp();
   const registerWithOtpMutation = useRegisterWithOtp();
-  const registerWithFirebaseMutation = useRegisterWithFirebase();
   const resendOtpMutation = useResendOtp();
 
   const [step, setStep] = useState<"FORM" | "OTP">("FORM");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [firebaseConfirmation, setFirebaseConfirmation] = useState<any>(null);
-  const [isSending, setIsSending] = useState(false);
-  const [isVerifying, setIsVerifying] = useState(false);
 
   const [formData, setFormData] = useState({
     fullName: "",
     phoneNumber: "",
+    email: "",
     villageName: "",
     password: "",
     referralCode: "",
@@ -63,13 +55,24 @@ export default function CustomerRegisterPage() {
     return /^01[0125][0-9]{8}$/.test(cleaned);
   };
 
+  const isValidEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+  };
+
   const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
 
+    const cleanEmail = formData.email.trim().toLowerCase();
     const cleanPhone = formData.phoneNumber.trim();
+
+    if (!isValidEmail(cleanEmail)) {
+      setErrorMessage("يرجى إدخال بريد إلكتروني صحيح (مثال: example@gmail.com)");
+      return;
+    }
+
     if (!isValidEgyptianPhone(cleanPhone)) {
-      setErrorMessage("يرجى إدخال رقم هاتف مصري صحيح (مثال: 01012345678)");
+      setErrorMessage("يرجى إدخال رقم هاتف مصري صحيح للتوصيل (مثال: 01012345678)");
       return;
     }
 
@@ -78,26 +81,16 @@ export default function CustomerRegisterPage() {
       return;
     }
 
-    setIsSending(true);
-
-    const isUsingFirebase = process.env.NEXT_PUBLIC_OTP_METHOD === "firebase" && isFirebaseConfigured();
-
     try {
-      if (isUsingFirebase) {
-        // Real SMS via Google Firebase Phone Auth
-        const confirmation = await sendFirebasePhoneOtp(cleanPhone, "recaptcha-container");
-        setFirebaseConfirmation(confirmation);
-      } else {
-        // WhatsApp / Backend OTP
-        await sendOtpMutation.mutateAsync({ phoneNumber: cleanPhone });
-      }
+      await sendOtpMutation.mutateAsync({
+        email: cleanEmail,
+        phoneNumber: cleanPhone,
+      });
       setStep("OTP");
     } catch (err: any) {
       setErrorMessage(
         err?.message || "فشل إرسال كود التحقق. يرجى التأكد من البيانات والمحاولة ثانية."
       );
-    } finally {
-      setIsSending(false);
     }
   };
 
@@ -110,66 +103,38 @@ export default function CustomerRegisterPage() {
       return;
     }
 
-    setIsVerifying(true);
-
-    const isUsingFirebase = process.env.NEXT_PUBLIC_OTP_METHOD === "firebase" && isFirebaseConfigured();
-
     try {
-      if (isUsingFirebase && firebaseConfirmation) {
-        // Verify code with Firebase
-        const { idToken } = await confirmFirebasePhoneOtp(firebaseConfirmation, otpCode.trim());
-
-        await registerWithFirebaseMutation.mutateAsync({
-          fullName: formData.fullName.trim(),
-          phoneNumber: formData.phoneNumber.trim(),
-          villageName: formData.villageName,
-          password: formData.password,
-          firebaseIdToken: idToken,
-          referralCode: formData.referralCode.trim() || null,
-        });
-      } else {
-        // WhatsApp / Backend verification
-        await registerWithOtpMutation.mutateAsync({
-          fullName: formData.fullName.trim(),
-          phoneNumber: formData.phoneNumber.trim(),
-          villageName: formData.villageName,
-          password: formData.password,
-          otpCode: otpCode.trim(),
-          referralCode: formData.referralCode.trim() || null,
-        });
-      }
+      await registerWithOtpMutation.mutateAsync({
+        fullName: formData.fullName.trim(),
+        phoneNumber: formData.phoneNumber.trim(),
+        email: formData.email.trim().toLowerCase(),
+        villageName: formData.villageName,
+        password: formData.password,
+        otpCode: otpCode.trim(),
+        referralCode: formData.referralCode.trim() || null,
+      });
 
       router.push("/dashboard");
     } catch (err: any) {
       setErrorMessage(err?.message || "كود التحقق غير صحيح أو انتهت صلاحيته.");
-    } finally {
-      setIsVerifying(false);
     }
   };
 
   const handleResend = async () => {
     setErrorMessage(null);
-    const isUsingFirebase = process.env.NEXT_PUBLIC_OTP_METHOD === "firebase" && isFirebaseConfigured();
     try {
-      if (isUsingFirebase) {
-        const confirmation = await sendFirebasePhoneOtp(
-          formData.phoneNumber.trim(),
-          "recaptcha-container"
-        );
-        setFirebaseConfirmation(confirmation);
-      } else {
-        await resendOtpMutation.mutateAsync({
-          phoneNumber: formData.phoneNumber.trim(),
-          purpose: OtpPurpose.Registration,
-        });
-      }
+      await resendOtpMutation.mutateAsync({
+        email: formData.email.trim().toLowerCase(),
+        phoneNumber: formData.phoneNumber.trim(),
+        purpose: OtpPurpose.Registration,
+      });
     } catch (err: any) {
       setErrorMessage(err?.message || "فشل إعادة إرسال الكود. يرجى الانتظار والمحاولة ثانية.");
       throw err;
     }
   };
 
-  const loading = isSending || isVerifying || sendOtpMutation.isPending || registerWithOtpMutation.isPending || registerWithFirebaseMutation.isPending;
+  const loading = sendOtpMutation.isPending || registerWithOtpMutation.isPending;
 
   return (
     <div className="min-h-screen flex items-center justify-center py-10 px-4 bg-gradient-to-br from-emerald-50 via-white to-amber-50">
@@ -178,9 +143,6 @@ export default function CustomerRegisterPage() {
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-sm"
       >
-        {/* Invisible reCAPTCHA container for Firebase */}
-        <div id="recaptcha-container"></div>
-
         {/* Logo */}
         <div className="text-center mb-8 cursor-pointer" onClick={() => router.push("/")}>
           <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-emerald-700 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl shadow-emerald-200/50">
@@ -188,7 +150,7 @@ export default function CustomerRegisterPage() {
           </div>
           <h1 className="text-2xl font-black text-gray-900">بالجملة</h1>
           <p className="text-sm text-gray-500 font-bold">
-            {step === "FORM" ? "إنشاء حساب جديد وتأكيد الموبايل" : "تأكيد ملكية رقم الهاتف"}
+            {step === "FORM" ? "إنشاء حساب جديد وتأكيد البريد الإلكتروني" : "تأكيد ملكية الحساب"}
           </p>
         </div>
 
@@ -242,7 +204,27 @@ export default function CustomerRegisterPage() {
 
                   <div>
                     <label className="text-sm font-black text-gray-700 mb-1.5 block">
-                      رقم الهاتف (الواتساب)
+                      البريد الإلكتروني (Gmail)
+                    </label>
+                    <Input
+                      icon={<Mail className="w-4 h-4" />}
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) =>
+                        setFormData({ ...formData, email: e.target.value })
+                      }
+                      placeholder="name@gmail.com"
+                      dir="ltr"
+                      required
+                    />
+                    <p className="text-[11px] text-gray-500 mt-1 font-bold">
+                      *سنرسل كود التحقق السداسي (OTP) إلى بريدك الإلكتروني
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="text-sm font-black text-gray-700 mb-1.5 block">
+                      رقم الهاتف (للتوصيل ومتابعة الطلبات)
                     </label>
                     <Input
                       icon={<Phone className="w-4 h-4" />}
@@ -255,9 +237,6 @@ export default function CustomerRegisterPage() {
                       dir="ltr"
                       required
                     />
-                    <p className="text-[11px] text-gray-500 mt-1 font-bold">
-                      *سنرسل كود تحقق سداسي (SMS OTP) للتأكد من ملكيتك للرقم
-                    </p>
                   </div>
 
                   <div>
@@ -312,9 +291,6 @@ export default function CustomerRegisterPage() {
                       placeholder="مثال: ABC123XYZ"
                       dir="ltr"
                     />
-                    <p className="text-[11px] text-gray-500 mt-1 font-bold">
-                      *هذا الكود خاص بالصديق الذي دعاك. السيستم سيقوم بإنشاء كودك الخاص تلقائياً بعد التسجيل.
-                    </p>
                   </div>
 
                   <Button
@@ -329,7 +305,7 @@ export default function CustomerRegisterPage() {
                         جاري إرسال الرمز...
                       </span>
                     ) : (
-                      "متابعة وإرسال كود التحقق 📲"
+                      "متابعة وإرسال كود التحقق 📩"
                     )}
                   </Button>
 
@@ -352,7 +328,7 @@ export default function CustomerRegisterPage() {
                   className="space-y-5"
                 >
                   <p className="text-sm text-center text-gray-600 font-bold leading-relaxed">
-                    أدخل كود التحقق المكون من 6 أرقام المرسل إلى هاتفك لتأكيد إنشاء الحساب:
+                    أدخل كود التحقق المكون من 6 أرقام المرسل إلى بريدك الإلكتروني لتأكيد الحساب:
                   </p>
 
                   <OtpInput
@@ -364,9 +340,13 @@ export default function CustomerRegisterPage() {
                     }}
                     onResend={handleResend}
                     isResending={resendOtpMutation.isPending}
-                    phoneNumber={formData.phoneNumber}
+                    email={formData.email}
                     disabled={loading}
                   />
+
+                  <p className="text-[11px] text-gray-500 text-center font-bold">
+                    💡 لم تجد الرسالة في صندوق الوارد؟ تفقد مجلد الرسائل غير المرغوب فيها (Spam).
+                  </p>
 
                   <Button
                     type="submit"
@@ -398,7 +378,7 @@ export default function CustomerRegisterPage() {
                       className="text-xs text-gray-500 hover:text-emerald-700 font-bold inline-flex items-center gap-1 transition-colors"
                     >
                       <ArrowRight className="w-3.5 h-3.5" />
-                      تعديل رقم الهاتف أو البيانات
+                      تعديل البريد الإلكتروني أو البيانات
                     </button>
                   </div>
                 </motion.form>

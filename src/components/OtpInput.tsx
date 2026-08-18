@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Loader2, RefreshCw, Smartphone } from "lucide-react";
+import { Loader2, RefreshCw, Smartphone, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface OtpInputProps {
@@ -14,6 +14,8 @@ interface OtpInputProps {
   disabled?: boolean;
   initialCooldownSeconds?: number;
   phoneNumber?: string;
+  email?: string;
+  recipient?: string;
 }
 
 export function OtpInput({
@@ -26,9 +28,14 @@ export function OtpInput({
   disabled = false,
   initialCooldownSeconds = 60,
   phoneNumber,
+  email,
+  recipient,
 }: OtpInputProps) {
   const [cooldown, setCooldown] = useState(initialCooldownSeconds);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+  const displayRecipient = recipient || email || phoneNumber;
+  const isEmail = displayRecipient?.includes("@");
 
   // Split string into array of chars
   const digits = Array.from({ length }, (_, i) => value[i] || "");
@@ -129,12 +136,16 @@ export function OtpInput({
 
   return (
     <div className="space-y-4">
-      {phoneNumber && (
+      {displayRecipient && (
         <div className="flex items-center justify-center gap-1.5 text-xs text-gray-500 font-bold bg-emerald-50/70 p-2.5 rounded-xl border border-emerald-100">
-          <Smartphone className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+          {isEmail ? (
+            <Mail className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+          ) : (
+            <Smartphone className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+          )}
           <span>تم إرسال كود التحقق إلى: </span>
           <strong className="text-emerald-800 font-mono text-sm" dir="ltr">
-            {phoneNumber}
+            {displayRecipient}
           </strong>
         </div>
       )}
