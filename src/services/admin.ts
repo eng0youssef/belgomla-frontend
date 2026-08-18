@@ -17,20 +17,27 @@ import {
 export async function adminLogin(
   credentials: AdminLoginRequest
 ): Promise<LoginResponse> {
-  const response = await apiClient<ApiResponse<LoginResponse>>(
-    "/admin/auth/login",
-    {
-      method: "POST",
-      body: credentials,
+  try {
+    const response = await apiClient<ApiResponse<LoginResponse>>(
+      "/admin/auth/login",
+      {
+        method: "POST",
+        body: credentials,
+      }
+    );
+
+    if (!response.success || !response.data) {
+      throw new Error(response.message || "بيانات الدخول غلط");
     }
-  );
 
-  if (!response.success || !response.data) {
-    throw new Error(response.message || "بيانات الدخول غلط");
+    setAdminToken(response.data.token);
+    return response.data;
+  } catch (error: any) {
+    if (error?.message?.includes("Invalid username or password") || error?.message?.includes("401")) {
+      throw new Error("اسم المستخدم أو كلمة المرور غير صحيحة");
+    }
+    throw error;
   }
-
-  setAdminToken(response.data.token);
-  return response.data;
 }
 
 /**

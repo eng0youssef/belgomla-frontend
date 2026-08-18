@@ -18,20 +18,27 @@ import {
 export async function customerLogin(
   credentials: CustomerLoginRequest
 ): Promise<CustomerAuthResponse> {
-  const response = await apiClient<ApiResponse<CustomerAuthResponse>>(
-    "/auth/customer/login",
-    {
-      method: "POST",
-      body: credentials,
+  try {
+    const response = await apiClient<ApiResponse<CustomerAuthResponse>>(
+      "/auth/customer/login",
+      {
+        method: "POST",
+        body: credentials,
+      }
+    );
+
+    if (!response.success || !response.data) {
+      throw new Error(response.message || "بيانات الدخول غير صحيحة، تأكد من رقم الهاتف وكلمة المرور");
     }
-  );
 
-  if (!response.success || !response.data) {
-    throw new Error(response.message || "بيانات الدخول غلط");
+    setCustomerToken(response.data.token);
+    return response.data;
+  } catch (error: any) {
+    if (error?.message?.includes("Invalid phone number or password") || error?.message?.includes("401")) {
+      throw new Error("بيانات الدخول غير صحيحة، تأكد من رقم الهاتف وكلمة المرور");
+    }
+    throw error;
   }
-
-  setCustomerToken(response.data.token);
-  return response.data;
 }
 
 /**
@@ -40,20 +47,27 @@ export async function customerLogin(
 export async function customerRegister(
   data: CustomerRegisterRequest
 ): Promise<CustomerAuthResponse> {
-  const response = await apiClient<ApiResponse<CustomerAuthResponse>>(
-    "/auth/customer/register",
-    {
-      method: "POST",
-      body: data,
+  try {
+    const response = await apiClient<ApiResponse<CustomerAuthResponse>>(
+      "/auth/customer/register",
+      {
+        method: "POST",
+        body: data,
+      }
+    );
+
+    if (!response.success || !response.data) {
+      throw new Error(response.message || "فشل تسجيل الحساب");
     }
-  );
 
-  if (!response.success || !response.data) {
-    throw new Error(response.message || "فشل تسجيل الحساب");
+    setCustomerToken(response.data.token);
+    return response.data;
+  } catch (error: any) {
+    if (error?.message?.includes("already registered")) {
+      throw new Error("يوجد حساب مسجل بالفعل برقم الهاتف هذا");
+    }
+    throw error;
   }
-
-  setCustomerToken(response.data.token);
-  return response.data;
 }
 
 /**

@@ -2,6 +2,8 @@ import type { ApiResponse } from "@/types/api";
 import {
   getAdminToken as _getAdminToken,
   removeAdminToken as _removeAdminToken,
+  getCustomerToken as _getCustomerToken,
+  removeCustomerToken as _removeCustomerToken,
 } from "./token-store";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5075/api";
@@ -63,13 +65,21 @@ export async function apiClient<T>(
   const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
 
   if (!response.ok) {
-    let errorMessage = "حدث خطأ غير متوقع";
-    let errorDetails: string | undefined;
+    const isAuthEndpoint =
+      endpoint.startsWith("/auth/") || endpoint.startsWith("/admin/auth/");
 
-    if (response.status === 401) {
-      _removeAdminToken();
-      if (typeof window !== "undefined") {
-        window.location.href = "/admin/login";
+    // Handle session expiration for protected endpoints only (never on login/register attempts)
+    if (response.status === 401 && !isAuthEndpoint) {
+      if (endpoint.startsWith("/admin")) {
+        _removeAdminToken();
+        if (typeof window !== "undefined" && !window.location.pathname.startsWith("/admin/login")) {
+          window.location.href = "/admin/login";
+        }
+      } else if (endpoint.startsWith("/customer")) {
+        _removeCustomerToken();
+        if (typeof window !== "undefined" && !window.location.pathname.startsWith("/login")) {
+          window.location.href = "/login";
+        }
       }
     }
 
