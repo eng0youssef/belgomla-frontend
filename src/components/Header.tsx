@@ -15,31 +15,8 @@ export default function Header() {
   }, []);
 
   return (
-    <>
-      {/* Top Announcement Bar */}
-      <div className="bg-slate-900 text-slate-200 text-xs py-2 px-4 border-b border-slate-800">
-        <div className="max-w-6xl mx-auto flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2 font-medium">
-            <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-slate-300 hidden sm:inline">
-              📍 التوصيل: المنصورة، بلقاس، شربين، وجميع مراكز الدقهلية
-            </span>
-            <span className="text-slate-300 sm:hidden">
-              📍 التوصيل لمحافظة الدقهلية
-            </span>
-          </div>
-          <div className="flex items-center gap-3 text-slate-300 text-[11px] sm:text-xs">
-            <span className="flex items-center gap-1 font-bold text-emerald-400">
-              <ShieldCheck className="w-3.5 h-3.5" />
-              معاينة مع المندوب قبل دفع الباقي
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Header */}
-      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-sm transition-all">
-        <div className="max-w-6xl mx-auto flex items-center justify-between px-4 py-3 sm:py-3.5">
+    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-sm transition-all">
+      <div className="max-w-6xl mx-auto flex items-center justify-between px-4 py-3 sm:py-3.5">
           {/* Brand Logo */}
           <Link href="/" className="flex items-center gap-2.5 group">
             <div className="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white shadow-sm group-hover:scale-105 group-hover:bg-emerald-700 transition-all">
@@ -102,8 +79,6 @@ export default function Header() {
             </Link>
           </div>
         </div>
-      </header>
-    </>
+    </header>
   );
 }
-

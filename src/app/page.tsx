@@ -90,79 +90,71 @@ export default function Home() {
       <Header />
 
       {/* Hero Section */}
-      <section className="relative pt-8 pb-16 px-4 overflow-hidden border-b border-slate-200/60 bg-gradient-to-b from-emerald-50/40 via-white to-white">
+      <section className="relative pt-12 pb-16 px-4 overflow-hidden border-b border-slate-200/60 bg-gradient-to-b from-slate-50 via-white to-white">
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          {/* Top trust badge */}
-          <div className="inline-flex items-center gap-2 bg-emerald-100/80 text-emerald-800 px-4 py-1.5 rounded-full text-xs font-black mb-6 shadow-sm border border-emerald-200">
-            <Sparkles className="w-4 h-4 text-emerald-600" />
-            <span>الشراء الجماعي الذكي في مصر 🇪🇬</span>
-          </div>
-
           {/* Main Headline */}
           <h1 className="text-3xl sm:text-5xl font-black text-slate-900 leading-tight mb-4 sm:mb-6 tracking-tight">
-            ليه تدفع <span className="text-red-500 line-through decoration-red-500/50 decoration-4">قطاعي</span> في المحلات..
-            <br />
-            لما ممكن تشتري قطعتك <span className="text-emerald-700 underline decoration-emerald-300 decoration-wavy underline-offset-8">بسعر الجملة</span>؟
+            اشتري قطعتك <span className="text-emerald-700">بسعر الجملة</span> من التاجر مباشرة
           </h1>
 
           {/* Subheading */}
-          <p className="text-slate-600 text-sm sm:text-lg font-bold max-w-2xl mx-auto mb-8 leading-relaxed">
-            في <span className="text-emerald-700 font-black">بالجملة</span>، كرتونة واحدة بتجمعك مع غيرك في نفس منطقتك عشان الكل ياخد سعر التاجر ويوفر فرق المحلات في جيبه من أول قطعة!
+          <p className="text-slate-600 text-sm sm:text-base font-medium max-w-2xl mx-auto mb-8 leading-relaxed">
+            بنجمع طلبك مع مشترين في نفس محافظتك لشراء كرتونة كاملة بسعر الجملة، مع التوصيل لباب بيتك والمعاينة الكاملة قبل دفع باقي الحساب.
           </p>
 
           {/* Action CTAs */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-12">
             <a href="#products">
-              <Button size="lg" className="w-full sm:w-auto text-base font-black px-8 h-13 rounded-2xl shadow-md">
-                تصفح المنتجات المتاحة دلوقتي 📦
+              <Button size="lg" className="w-full sm:w-auto text-base font-black px-8 h-12 rounded-xl shadow-sm bg-emerald-600 hover:bg-emerald-700">
+                تصفح المنتجات المتاحة
               </Button>
             </a>
             <a href="#how-it-works">
-              <Button size="lg" variant="outline" className="w-full sm:w-auto text-sm font-bold px-6 h-13 rounded-2xl">
-                إزاي بنوفرلك في ٣ خطوات؟
+              <Button size="lg" variant="outline" className="w-full sm:w-auto text-sm font-bold px-6 h-12 rounded-xl border-slate-300">
+                طريقة عمل الموقع
               </Button>
             </a>
           </div>
 
           {/* Trust Metrics Bar */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl mx-auto pt-4 text-right sm:text-center">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl mx-auto pt-2 text-right sm:text-center">
             <div className="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-3">
-              <div className="w-9 h-9 bg-emerald-100 text-emerald-700 rounded-xl flex items-center justify-center flex-shrink-0">
+              <div className="w-9 h-9 bg-emerald-50 text-emerald-700 rounded-xl flex items-center justify-center flex-shrink-0">
                 <Package className="w-5 h-5" />
               </div>
               <div>
                 <p className="text-sm font-black text-slate-900">+1,200</p>
-                <p className="text-[11px] text-slate-500 font-bold">كرتونة اكتملت</p>
+                <p className="text-[11px] text-slate-500 font-bold">كرتونة مكتملة</p>
               </div>
             </div>
 
             <div className="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-3">
-              <div className="w-9 h-9 bg-amber-100 text-amber-700 rounded-xl flex items-center justify-center flex-shrink-0">
+              <div className="w-9 h-9 bg-amber-50 text-amber-700 rounded-xl flex items-center justify-center flex-shrink-0">
                 <Sparkles className="w-5 h-5" />
               </div>
               <div>
                 <p className="text-sm font-black text-slate-900">+250,000 ج</p>
-                <p className="text-[11px] text-slate-500 font-bold">توفير لعملائنا</p>
+                <p className="text-[11px] text-slate-500 font-bold">إجمالي التوفير</p>
               </div>
             </div>
 
             <div className="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-3">
-              <div className="w-9 h-9 bg-blue-100 text-blue-700 rounded-xl flex items-center justify-center flex-shrink-0">
+              <div className="w-9 h-9 bg-blue-50 text-blue-700 rounded-xl flex items-center justify-center flex-shrink-0">
                 <ShieldCheck className="w-5 h-5" />
               </div>
               <div>
                 <p className="text-sm font-black text-slate-900">معاينة كاملة</p>
-                <p className="text-[11px] text-slate-500 font-bold">قبل دفع الباقي</p>
+                <p className="text-[11px] text-slate-500 font-bold">عند الاستلام</p>
               </div>
             </div>
 
             <div className="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-3">
-              <div className="w-9 h-9 bg-purple-100 text-purple-700 rounded-xl flex items-center justify-center flex-shrink-0">
+              <div className="w-9 h-9 bg-purple-50 text-purple-700 rounded-xl flex items-center justify-center flex-shrink-0">
                 <Truck className="w-5 h-5" />
               </div>
               <div>
-                <p className="text-sm font-black text-slate-900">لباب البيت</p>
-                <p className="text-[11px] text-slate-500 font-bold">في كل مراكز الدقهلية</p>
+                <p className="text-sm font-black text-slate-900">توصيل مباشر</p>
+                <p className="text-[11px] text-slate-500 font-bold">لمحافظة الدقهلية</p>
               </div>
             </div>
           </div>
