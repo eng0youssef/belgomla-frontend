@@ -19,7 +19,7 @@ export default function Footer() {
               <span className="text-xl font-black text-white tracking-tight">SLASH | سلاش</span>
             </div>
             <p className="text-xs text-slate-400 leading-relaxed">
-              منصة الشراء الجماعي الذكية في مصر.. بنجمع أصحاب الطلبات في كرتونة واحدة عشان الكل يشتري بسعر تاجر الجملة الحقيقي ويوفر فرق المحلات.
+              منصة الشراء الجماعي الذكية في مصر.. بنجمع أصحاب الطلبات في كرتونة واحدة عشان الكل يشتري بسعر الجملة الحقيقي ويوفر فرق المحلات.
             </p>
             <div className="pt-2">
               <a
@@ -44,7 +44,7 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-2">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
-                <span>معاينة كاملة مع المندوب قبل دفع الباقي</span>
+                <span>معاينة كاملة مع المندوب قبل الدفع</span>
               </li>
               <li className="flex items-center gap-2">
                 <Truck className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
@@ -82,7 +82,7 @@ export default function Footer() {
           <div className="space-y-3">
             <h4 className="text-sm font-black text-white">طرق الدفع والأمان</h4>
             <p className="text-xs text-slate-400 leading-relaxed">
-              العربون لتأكيد الحجز: فودافون كاش أو إنستاباي. باقي الحساب يتم دفعه عند الاستلام بعد المعاينة مع المندوب.
+              بدون أي مقدم.. الدفع بالكامل عند الاستلام بعد المعاينة والفحص الدقيق مع المندوب.
             </p>
             <div className="flex flex-wrap gap-2 pt-1">
               <span className="bg-slate-800 border border-slate-700 text-slate-300 text-xs px-2.5 py-1 rounded-md font-bold">

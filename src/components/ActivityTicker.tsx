@@ -7,9 +7,9 @@ import { Sparkles } from "lucide-react";
 // Real-feeling social proof ticker (authentic Egyptian phrasing)
 const ACTIVITIES = [
   { message: "حجز جديد اتسجل في كرتونة المنصورة 📦", time: "منذ لحظات" },
-  { message: "تم تأكيد عربون كرتونة في بلقاس ✅", time: "منذ دقيقتين" },
+  { message: "حجز جديد اكتمل في كرتونة بلقاس ✅", time: "منذ دقيقتين" },
   { message: "كرتونة جديدة فتحت للحجز بسعر الجملة 🎉", time: "منذ ٥ دقائق" },
-  { message: "عميل في شربين وفّر ٤٥٠ جنيه مع شلة التوفير 🚀", time: "منذ ١٠ دقائق" },
+  { message: "عميل في شربين وفّر ٤٥٠ جنيه مع شلة سلاش 🚀", time: "منذ ١٠ دقائق" },
 ];
 
 export default function ActivityTicker() {
