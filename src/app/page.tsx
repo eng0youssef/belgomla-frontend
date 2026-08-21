@@ -28,19 +28,16 @@ const TESTIMONIALS = [
     name: "مروة عبد الرحمن",
     comment: "بصراحة كنت قلقانة في الأول، بس المندوب جه وقالي افتحي شوفي حاجتك واتأكدي منها قبل ما تدفعي ولا مليم.. الخامة طلعت تحفة وفرق السعر عن المحلات محترم جداً.",
     rating: 5,
-    tag: "وفّرت ٢٨٠ ج",
   },
   {
     name: "أحمد حسن",
     comment: "فكرة ممتازة بجد، بعت اللينك لاثنين صحابي واشتروا معايا ونزلنا في السعر أكتر.. والأوردر وصل لحد باب البيت في ميعاده بالظبط.",
     rating: 5,
-    tag: "طلب مع أصحابه",
   },
   {
     name: "سارة محمود",
     comment: "أحسن حاجة إن مفيش وجع دماغ ولف في الأسواق عشان اشتري بسعر الجملة، طلبت قطعتين وجوم بسعر الكرتونة والدفع كاش بعد ما عاينت.",
     rating: 5,
-    tag: "عميلة متكررة",
   },
 ];
 
@@ -228,15 +225,10 @@ export default function Home() {
           {TESTIMONIALS.map((t, idx) => (
             <div key={idx} className="bg-white border border-slate-200 rounded-xl p-5 flex flex-col justify-between space-y-4 shadow-xs">
               <div>
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-1 text-amber-400">
-                    {[...Array(t.rating)].map((_, i) => (
-                      <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                    ))}
-                  </div>
-                  <span className="bg-emerald-50 text-emerald-700 text-[10px] font-bold px-2 py-0.5 rounded border border-emerald-100">
-                    {t.tag}
-                  </span>
+                <div className="flex items-center gap-1 text-amber-400 mb-3">
+                  {[...Array(t.rating)].map((_, i) => (
+                    <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                  ))}
                 </div>
                 <p className="text-xs text-slate-600 font-normal leading-relaxed">
                   "{t.comment}"
