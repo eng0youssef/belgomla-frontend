@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ShoppingBag, MessageCircle, User, ShieldCheck } from "lucide-react";
+import { ShoppingBag, MessageCircle, User, UserPlus, ShieldCheck } from "lucide-react";
 import { whatsappChatUrl } from "@/lib/utils";
 import { getCustomerToken } from "@/services/api-client";
 import { SUPPORT_PHONE } from "@/lib/constants";
@@ -51,29 +51,45 @@ export default function Header() {
           </nav>
 
           {/* Right Actions */}
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2 sm:gap-2.5">
             <a
               href={whatsappChatUrl(SUPPORT_PHONE)}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 bg-[#25D366]/10 text-[#128C7E] hover:bg-[#25D366]/20 px-3.5 py-2 rounded-xl text-xs font-black transition-all border border-[#25D366]/20"
+              className="flex items-center gap-1.5 bg-[#25D366]/10 text-[#128C7E] hover:bg-[#25D366]/20 px-3 sm:px-3.5 py-2 rounded-xl text-xs font-black transition-all border border-[#25D366]/20"
             >
               <MessageCircle className="w-4 h-4 text-[#25D366]" />
               <span className="hidden sm:inline">خدمة العملاء</span>
               <span className="sm:hidden">واتساب</span>
             </a>
 
-            <Link
-              href={isLoggedIn ? "/dashboard" : "/login"}
-              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-black transition-all border ${
-                isLoggedIn
-                  ? "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100"
-                  : "bg-slate-900 text-white border-slate-900 hover:bg-slate-800"
-              }`}
-            >
-              <User className="w-3.5 h-3.5" />
-              <span>{isLoggedIn ? "حسابي والطلبات" : "تسجيل الدخول"}</span>
-            </Link>
+            {isLoggedIn ? (
+              <Link
+                href="/dashboard"
+                className="flex items-center gap-1.5 px-3 sm:px-3.5 py-2 rounded-xl text-xs font-black transition-all border bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100"
+              >
+                <User className="w-3.5 h-3.5" />
+                <span>حسابي والطلبات</span>
+              </Link>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className="flex items-center gap-1.5 px-3 sm:px-3.5 py-2 rounded-xl text-xs font-black transition-all border bg-slate-900 text-white border-slate-900 hover:bg-slate-800"
+                >
+                  <User className="w-3.5 h-3.5" />
+                  <span>تسجيل الدخول</span>
+                </Link>
+
+                <Link
+                  href="/register"
+                  className="flex items-center gap-1.5 px-3 sm:px-3.5 py-2 rounded-xl text-xs font-black transition-all border bg-emerald-600 text-white border-emerald-600 hover:bg-emerald-700 shadow-sm"
+                >
+                  <UserPlus className="w-3.5 h-3.5" />
+                  <span>إنشاء حساب</span>
+                </Link>
+              </>
+            )}
           </div>
         </div>
     </header>
