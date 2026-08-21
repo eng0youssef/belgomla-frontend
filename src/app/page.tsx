@@ -93,15 +93,10 @@ export default function Home() {
           </h1>
 
           {/* Action CTAs */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 mb-12">
+          <div className="flex items-center justify-center mb-12">
             <a href="#products">
-              <Button size="lg" className="w-full sm:w-auto text-base font-bold px-8 h-12 rounded-xl shadow-sm bg-emerald-700 hover:bg-emerald-800 text-white">
+              <Button size="lg" className="text-base font-bold px-9 h-12 rounded-xl shadow-sm bg-emerald-700 hover:bg-emerald-800 text-white">
                 تصفح المنتجات المتاحة
-              </Button>
-            </a>
-            <a href="#how-it-works">
-              <Button size="lg" variant="outline" className="w-full sm:w-auto text-sm font-bold px-6 h-12 rounded-xl border-slate-300 hover:bg-slate-50 text-slate-700">
-                كيف يعمل الموقع؟
               </Button>
             </a>
           </div>
@@ -175,89 +170,6 @@ export default function Home() {
               </p>
             </div>
           )}
-        </div>
-      </section>
-
-      {/* How It Works Section */}
-      <section id="how-it-works" className="py-16 px-4 max-w-5xl mx-auto border-t border-slate-200/60">
-        <div className="text-center mb-12">
-          <span className="bg-slate-100 text-slate-700 text-xs font-bold px-3 py-1 rounded-md">
-            آلية الشراء
-          </span>
-          <h2 className="text-2xl sm:text-3xl font-black text-slate-900 mt-2 mb-2">
-            كيف يعمل موقع سلاش؟
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-500 font-medium max-w-md mx-auto">
-            خطوات بسيطة ومباشرة للحصول على أسعار الجملة
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Step 1 */}
-          <div className="bg-white border border-slate-200 rounded-2xl p-6 relative flex flex-col justify-between shadow-xs">
-            <div className="absolute -top-3.5 right-6 bg-slate-900 text-white w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold">
-              ١
-            </div>
-            <div>
-              <div className="w-11 h-11 bg-emerald-50 text-emerald-700 rounded-xl flex items-center justify-center mb-4 mt-2">
-                <Package className="w-5 h-5" />
-              </div>
-              <h3 className="text-base font-bold text-slate-900 mb-2">
-                اختر المنتج
-              </h3>
-              <p className="text-xs text-slate-500 leading-relaxed font-medium">
-                تصفح المنتجات المتاحة واطلب ما تحتاجه بسعر الجملة مباشرة.
-              </p>
-            </div>
-            <div className="mt-4 pt-3 border-t border-slate-100 text-[11px] font-bold text-emerald-700 flex items-center gap-1">
-              <CheckCircle2 className="w-3.5 h-3.5" />
-              سعر الجملة من أول قطعة
-            </div>
-          </div>
-
-          {/* Step 2 */}
-          <div className="bg-white border border-slate-200 rounded-2xl p-6 relative flex flex-col justify-between shadow-xs">
-            <div className="absolute -top-3.5 right-6 bg-slate-900 text-white w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold">
-              ٢
-            </div>
-            <div>
-              <div className="w-11 h-11 bg-blue-50 text-blue-700 rounded-xl flex items-center justify-center mb-4 mt-2">
-                <Clock className="w-5 h-5" />
-              </div>
-              <h3 className="text-base font-bold text-slate-900 mb-2">
-                سجّل بيانات الطلب
-              </h3>
-              <p className="text-xs text-slate-500 leading-relaxed font-medium">
-                أدخل بيانات التوصيل الخاصة بك لتأكيد طلبك وتجهيز الشحن لمنطقتك بسهولة.
-              </p>
-            </div>
-            <div className="mt-4 pt-3 border-t border-slate-100 text-[11px] font-bold text-blue-700 flex items-center gap-1">
-              <CheckCircle2 className="w-3.5 h-3.5" />
-              تأكيد فوري للطلب
-            </div>
-          </div>
-
-          {/* Step 3 */}
-          <div className="bg-white border border-slate-200 rounded-2xl p-6 relative flex flex-col justify-between shadow-xs">
-            <div className="absolute -top-3.5 right-6 bg-slate-900 text-white w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold">
-              ٣
-            </div>
-            <div>
-              <div className="w-11 h-11 bg-amber-50 text-amber-700 rounded-xl flex items-center justify-center mb-4 mt-2">
-                <Truck className="w-5 h-5" />
-              </div>
-              <h3 className="text-base font-bold text-slate-900 mb-2">
-                المعاينة والاستلام
-              </h3>
-              <p className="text-xs text-slate-500 leading-relaxed font-medium">
-                يصلك مندوب الشحن حتى باب منزلك، تفتح الشحنة وتعاين المنتج بنفسك قبل سداد قيمة الطلب.
-              </p>
-            </div>
-            <div className="mt-4 pt-3 border-t border-slate-100 text-[11px] font-bold text-amber-700 flex items-center gap-1">
-              <CheckCircle2 className="w-3.5 h-3.5" />
-              دفع عند الاستلام بعد الفحص
-            </div>
-          </div>
         </div>
       </section>
 

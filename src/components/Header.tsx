@@ -42,11 +42,8 @@ export default function Header() {
             <Link href="/" className="hover:text-emerald-700 transition-colors">
               المنتجات المتاحة
             </Link>
-            <a href="/#how-it-works" className="hover:text-emerald-700 transition-colors">
-              إزاي بنوفرلك؟
-            </a>
             <a href="/#referrals" className="hover:text-emerald-700 transition-colors">
-              شلة التوفير
+              برنامج مشاركة التوفير
             </a>
             <a href="/#faqs" className="hover:text-emerald-700 transition-colors">
               الأسئلة الشائعة
