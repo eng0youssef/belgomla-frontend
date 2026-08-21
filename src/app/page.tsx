@@ -88,22 +88,10 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative pt-12 pb-16 px-4 overflow-hidden border-b border-slate-200/70 bg-gradient-to-b from-slate-50/70 via-white to-white">
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-800 border border-emerald-200/80 px-4 py-1.5 rounded-full text-xs font-bold mb-6">
-            <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
-            <span>منصة الشراء الجماعي بأسعار الجملة</span>
-          </div>
-
-          {/* Main Headline */}
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-slate-900 leading-[1.25] mb-5 tracking-tight">
-            تسوّق أفضل المنتجات{" "}
-            <span className="text-emerald-700">بأسعار الجملة</span>
+          {/* Single Simple Professional Hero Heading */}
+          <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black text-slate-900 leading-snug max-w-3xl mx-auto mb-8 tracking-tight">
+            مع سلاش.. السعر ببلاش! تسوّق بالقطعة <span className="text-emerald-700">بأسعار الجملة</span> مع المعاينة الكاملة والدفع عند الاستلام.
           </h1>
-
-          {/* Subheading */}
-          <p className="text-slate-600 text-sm sm:text-base md:text-lg font-medium max-w-2xl mx-auto mb-9 leading-relaxed">
-            مع سلاش.. السعر ببلاش. تسوّق بالقطعة بأسعار الجملة، مع إمكانية المعاينة والفحص الكامل والدفع عند الاستلام.
-          </p>
 
           {/* Action CTAs */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 mb-12">
