@@ -153,21 +153,10 @@ export default function Home() {
 
       {/* Active Products Section */}
       <section id="products" className="py-14 px-4 max-w-6xl mx-auto">
-        <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between mb-8 gap-3">
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
-              <span className="text-xs font-bold text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-md border border-emerald-200">
-                عروض نشطة
-              </span>
-            </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 mt-2">
-              المنتجات المتاحة
-            </h2>
-          </div>
-          <p className="text-xs text-slate-500 font-medium">
-            أفضل العروض والأسعار المتاحة للطلب الفوري
-          </p>
+        <div className="mb-8">
+          <h2 className="text-2xl sm:text-3xl font-black text-slate-900">
+            المنتجات المتاحة
+          </h2>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
