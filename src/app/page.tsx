@@ -53,7 +53,7 @@ const TESTIMONIALS = [
 const FAQS = [
   {
     q: "ما هي فكرة منصة سلاش (SLASH)؟",
-    a: "منصة شراء تشاركي تتيح لك شراء المنتجات بسعر الجملة للقطعة الواحدة من خلال تجميع طلبات المشترين في منطقتك ضمن كرتونة شحن مشتركة وتوصيلها لكل مشترٍ حتى باب منزله.",
+    a: "منصة تسوّق تتيح لك شراء المنتجات بأسعار الجملة للقطعة الواحدة مباشرة وتوصيلها حتى باب منزلك.",
   },
   {
     q: "كيف يتم سداد قيمة الطلب؟",
@@ -175,11 +175,11 @@ export default function Home() {
               </span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-black text-slate-900 mt-2">
-              المنتجات المتاحة للشراء الجماعي
+              المنتجات المتاحة
             </h2>
           </div>
           <p className="text-xs text-slate-500 font-medium">
-            اختر منتجك واحجز مكانك في كرتونة الشحن المشتركة
+            أفضل العروض والأسعار المتاحة للطلب الفوري
           </p>
         </div>
 
@@ -230,7 +230,7 @@ export default function Home() {
                 اختر المنتج
               </h3>
               <p className="text-xs text-slate-500 leading-relaxed font-medium">
-                تصفح المنتجات المتاحة واختر الكمية المطلوبة بسعر الجملة مباشرة دون اشتراط شراء كرتونة كاملة.
+                تصفح المنتجات المتاحة واطلب ما تحتاجه بسعر الجملة مباشرة.
               </p>
             </div>
             <div className="mt-4 pt-3 border-t border-slate-100 text-[11px] font-bold text-emerald-700 flex items-center gap-1">
@@ -252,7 +252,7 @@ export default function Home() {
                 سجّل بيانات الطلب
               </h3>
               <p className="text-xs text-slate-500 leading-relaxed font-medium">
-                أدخل بيانات التوصيل الخاصة بك لتأكيد طلبك في كرتونة الشحن المشتركة لمنطقتك بسهولة وسرعة.
+                أدخل بيانات التوصيل الخاصة بك لتأكيد طلبك وتجهيز الشحن لمنطقتك بسهولة.
               </p>
             </div>
             <div className="mt-4 pt-3 border-t border-slate-100 text-[11px] font-bold text-blue-700 flex items-center gap-1">
