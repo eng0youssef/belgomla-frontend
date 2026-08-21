@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { ShoppingBag, ShieldCheck, Truck, MessageCircle, Phone, MapPin, CheckCircle } from "lucide-react";
-import { SUPPORT_PHONE, VILLAGES } from "@/lib/constants";
+import { ShoppingBag, ShieldCheck, Truck, MessageCircle, CheckCircle } from "lucide-react";
+import { SUPPORT_PHONE } from "@/lib/constants";
 import { whatsappChatUrl } from "@/lib/utils";
 
 export default function Footer() {
@@ -9,24 +9,24 @@ export default function Footer() {
   return (
     <footer className="bg-slate-900 text-slate-300 border-t border-slate-800 pt-12 pb-8 mt-16">
       <div className="max-w-6xl mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 pb-12 border-b border-slate-800">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pb-12 border-b border-slate-800">
           {/* Brand & About */}
-          <div className="space-y-3 md:col-span-1">
+          <div className="space-y-3">
             <div className="flex items-center gap-2.5">
               <div className="w-9 h-9 bg-emerald-500 rounded-xl flex items-center justify-center text-slate-900 font-bold">
                 <ShoppingBag className="w-5 h-5 text-white" />
               </div>
               <span className="text-xl font-black text-white tracking-tight">SLASH | سلاش</span>
             </div>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              منصة الشراء الجماعي الذكية في مصر.. بنجمع أصحاب الطلبات في كرتونة واحدة عشان الكل يشتري بسعر الجملة الحقيقي ويوفر فرق المحلات.
+            <p className="text-xs text-slate-400 leading-relaxed max-w-sm">
+              منصة التسوّق الذكية في مصر.. نوفر لك أفضل المنتجات بأسعار الجملة للقطعة الواحدة، مع التوصيل لباب بيتك والمعاينة الكاملة والدفع عند الاستلام.
             </p>
             <div className="pt-2">
               <a
                 href={whatsappChatUrl(SUPPORT_PHONE, "مرحباً، أود الاستفسار عن منصة سلاش")}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-xs font-bold text-emerald-400 bg-emerald-950/60 border border-emerald-800/60 px-3 py-1.5 rounded-lg hover:bg-emerald-900/60 transition-colors"
+                className="inline-flex items-center gap-2 text-xs font-bold text-emerald-400 bg-emerald-950/60 border border-emerald-800/60 px-3.5 py-2 rounded-xl hover:bg-emerald-900/60 transition-colors"
               >
                 <MessageCircle className="w-4 h-4 text-[#25D366]" />
                 واتساب خدمة العملاء
@@ -36,51 +36,30 @@ export default function Footer() {
 
           {/* Value Propositions */}
           <div className="space-y-3">
-            <h4 className="text-sm font-black text-white">ليه تشتري معانا؟</h4>
-            <ul className="space-y-2 text-xs text-slate-400">
+            <h4 className="text-sm font-bold text-white">لماذا منصة سلاش؟</h4>
+            <ul className="space-y-2.5 text-xs text-slate-400">
               <li className="flex items-center gap-2">
                 <CheckCircle className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
                 <span>سعر الجملة للقطعة الواحدة</span>
               </li>
               <li className="flex items-center gap-2">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
-                <span>معاينة كاملة مع المندوب قبل الدفع</span>
+                <span>معاينة وفحص كامل مع المندوب قبل السداد</span>
               </li>
               <li className="flex items-center gap-2">
                 <Truck className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
-                <span>توصيل سريع لحد باب البيت</span>
+                <span>شحن وتوصيل مباشر لباب المنزل</span>
               </li>
               <li className="flex items-center gap-2">
                 <CheckCircle className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
-                <span>خصومات إضافية عند دعوة الشلة</span>
+                <span>خصومات إضافية عند دعوة الأصدقاء</span>
               </li>
             </ul>
           </div>
 
-          {/* Coverage Areas */}
-          <div className="space-y-3">
-            <h4 className="text-sm font-black text-white flex items-center gap-1.5">
-              <MapPin className="w-4 h-4 text-emerald-400" />
-              مناطق التوصيل الحالية
-            </h4>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              نغطي حالياً محافظة الدقهلية وضواحيها:
-            </p>
-            <div className="flex flex-wrap gap-1.5 pt-1">
-              {VILLAGES.map((village) => (
-                <span
-                  key={village}
-                  className="bg-slate-800 text-slate-300 text-[11px] px-2 py-0.5 rounded-md font-medium"
-                >
-                  {village}
-                </span>
-              ))}
-            </div>
-          </div>
-
           {/* Payment & Security */}
           <div className="space-y-3">
-            <h4 className="text-sm font-black text-white">طرق الدفع والأمان</h4>
+            <h4 className="text-sm font-bold text-white">طرق الدفع والأمان</h4>
             <p className="text-xs text-slate-400 leading-relaxed">
               الدفع بالكامل عند الاستلام بعد المعاينة والفحص مع مندوب التوصيل.
             </p>
@@ -121,4 +100,3 @@ export default function Footer() {
     </footer>
   );
 }
-
