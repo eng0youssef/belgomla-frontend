@@ -21,7 +21,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { removeCustomerToken } from "@/services/api-client";
-import { VILLAGES } from "@/lib/constants";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
@@ -164,22 +163,16 @@ export default function ProfileSettingsPage() {
 
               <div>
                 <label className="text-xs font-black text-slate-700 mb-1.5 block">
-                  القرية / المركز (في الدقهلية)
+                  العنوان
                 </label>
-                <div className="relative">
-                  <MapPin className="w-4 h-4 absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-                  <select
-                    required
-                    value={villageName}
-                    onChange={(e) => setVillageName(e.target.value)}
-                    className="flex h-12 w-full rounded-xl border border-slate-200 bg-slate-50/50 pr-10 pl-4 py-2 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
-                  >
-                    <option value="">اختر منطقتك...</option>
-                    {VILLAGES.map((v) => (
-                      <option key={v} value={v}>{v}</option>
-                    ))}
-                  </select>
-                </div>
+                <Input
+                  icon={<MapPin className="w-4 h-4 text-slate-400" />}
+                  required
+                  value={villageName}
+                  onChange={(e) => setVillageName(e.target.value)}
+                  placeholder="اكتب عنوانك بالتفصيل (المدينة، الحي، الشارع)..."
+                  className="h-12 bg-slate-50/50"
+                />
               </div>
 
               <div>
