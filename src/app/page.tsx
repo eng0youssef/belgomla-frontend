@@ -21,7 +21,6 @@ import Header from "@/components/Header";
 import ProductCard from "@/components/ProductCard";
 import Footer from "@/components/Footer";
 import { useActiveProducts } from "@/hooks/use-products";
-import { Button } from "@/components/ui/button";
 
 // Testimonials data
 const TESTIMONIALS = [
@@ -88,18 +87,9 @@ export default function Home() {
       <section className="relative pt-12 pb-16 px-4 overflow-hidden border-b border-slate-200/70 bg-gradient-to-b from-slate-50/70 via-white to-white">
         <div className="max-w-4xl mx-auto text-center relative z-10">
           {/* Single Simple Professional Hero Heading */}
-          <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black text-slate-900 leading-snug max-w-3xl mx-auto mb-8 tracking-tight">
+          <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black text-slate-900 leading-snug max-w-3xl mx-auto mb-10 tracking-tight">
             مع سلاش.. السعر ببلاش! تسوّق بالقطعة <span className="text-emerald-700">بأسعار الجملة</span> مع المعاينة الكاملة والدفع عند الاستلام.
           </h1>
-
-          {/* Action CTAs */}
-          <div className="flex items-center justify-center mb-12">
-            <a href="#products">
-              <Button size="lg" className="text-base font-bold px-9 h-12 rounded-xl shadow-sm bg-emerald-700 hover:bg-emerald-800 text-white">
-                تصفح المنتجات المتاحة
-              </Button>
-            </a>
-          </div>
 
           {/* Features Grid */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl mx-auto text-right">

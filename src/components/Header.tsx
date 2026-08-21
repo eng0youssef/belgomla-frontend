@@ -39,9 +39,9 @@ export default function Header() {
 
           {/* Center Navigation for Desktop */}
           <nav className="hidden md:flex items-center gap-6 text-sm font-bold text-slate-600">
-            <Link href="/" className="hover:text-emerald-700 transition-colors">
+            <a href="/#products" className="hover:text-emerald-700 transition-colors">
               المنتجات المتاحة
-            </Link>
+            </a>
             <a href="/#referrals" className="hover:text-emerald-700 transition-colors">
               برنامج مشاركة التوفير
             </a>
