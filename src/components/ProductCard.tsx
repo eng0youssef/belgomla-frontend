@@ -61,9 +61,6 @@ export default function ProductCard({ product }: ProductCardProps) {
             <h3 className="font-black text-slate-900 text-lg sm:text-xl leading-snug group-hover:text-emerald-700 transition-colors">
               {product.name}
             </h3>
-            <p className="text-xs text-slate-500 font-medium mt-0.5">
-              كرتونة سعة {capacity} قطع
-            </p>
           </div>
 
           {/* Pricing Box */}
