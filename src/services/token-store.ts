@@ -31,8 +31,8 @@
 
 // ─── Cookie names ─────────────────────────────────────────────────────────────
 // These cookies hold the value "1" ONLY — never the actual JWT.
-const ADMIN_SESSION_COOKIE = "belgomla_admin_session";
-const CUSTOMER_SESSION_COOKIE = "belgomla_customer_session";
+const ADMIN_SESSION_COOKIE = "slash_admin_session";
+const CUSTOMER_SESSION_COOKIE = "slash_customer_session";
 
 // ─── In-memory JWT storage ───────────────────────────────────────────────────
 let _adminToken: string | null = null;

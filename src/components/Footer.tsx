@@ -16,14 +16,14 @@ export default function Footer() {
               <div className="w-9 h-9 bg-emerald-500 rounded-xl flex items-center justify-center text-slate-900 font-bold">
                 <ShoppingBag className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl font-black text-white tracking-tight">بالجملة BelGomla</span>
+              <span className="text-xl font-black text-white tracking-tight">SLASH | سلاش</span>
             </div>
             <p className="text-xs text-slate-400 leading-relaxed">
               منصة الشراء الجماعي الذكية في مصر.. بنجمع أصحاب الطلبات في كرتونة واحدة عشان الكل يشتري بسعر تاجر الجملة الحقيقي ويوفر فرق المحلات.
             </p>
             <div className="pt-2">
               <a
-                href={whatsappChatUrl(SUPPORT_PHONE, "مرحباً، أود الاستفسار عن منصة بالجملة")}
+                href={whatsappChatUrl(SUPPORT_PHONE, "مرحباً، أود الاستفسار عن منصة سلاش")}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 text-xs font-bold text-emerald-400 bg-emerald-950/60 border border-emerald-800/60 px-3 py-1.5 rounded-lg hover:bg-emerald-900/60 transition-colors"
@@ -101,7 +101,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-3">
           <p font-bold="true" suppressHydrationWarning>
-            جميع الحقوق محفوظة منصة بالجملة BelGomla © {currentYear}
+            جميع الحقوق محفوظة منصة SLASH | سلاش © {currentYear}
           </p>
           <div className="flex items-center gap-4 text-slate-400 font-medium">
             <Link href="/" className="hover:text-white transition-colors">

@@ -158,7 +158,7 @@ export default function AdminDashboardPage() {
             </div>
             <div>
               <h1 className="text-lg font-black text-gray-900">لوحة التحكم</h1>
-              <p className="text-xs text-gray-500 font-bold">بالجملة BelGomla</p>
+              <p className="text-xs text-gray-500 font-bold">SLASH | سلاش</p>
             </div>
           </div>
           <Button

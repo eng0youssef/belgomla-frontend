@@ -60,7 +60,7 @@ function OrderSuccessContent() {
   const origin = typeof window !== "undefined" ? window.location.origin : "";
   const referralLink = referralCode ? `${origin}?ref=${referralCode}` : "";
   const shareText = referralLink
-    ? `أنا لسه حاجز بسعر الجملة من موقع بالجملة! 🎉 خش احجز قطعتك معايا في نفس الكرتونة عشان نوفر مع بعض: ${referralLink}`
+    ? `أنا لسه حاجز بسعر الجملة من موقع سلاش! 🎉 خش احجز قطعتك معايا في نفس الكرتونة عشان نوفر مع بعض: ${referralLink}`
     : "";
 
   const copyLink = () => {
@@ -117,7 +117,7 @@ function OrderSuccessContent() {
   const remainingVal = depositVal ? Math.max(0, order.finalPrice - depositVal) : null;
   const remainingText = remainingVal !== null ? `${remainingVal} ج.م` : "باقي الحساب";
 
-  const depositReceiptMsg = `السلام عليكم، أنا ${order.customerName}، لسه عامل أوردر في موقع بالجملة.\nرقم الطلب: ${order.orderId.slice(0, 8).toUpperCase()}\nالكرتونة: #${order.cartonNumber}\nوحولت العربون ${depositVal ? `(${depositVal} جنيه)` : "المطلوب"} لتأكيد الحجز.`;
+  const depositReceiptMsg = `السلام عليكم، أنا ${order.customerName}، لسه عامل أوردر في موقع سلاش.\nرقم الطلب: ${order.orderId.slice(0, 8).toUpperCase()}\nالكرتونة: #${order.cartonNumber}\nوحولت العربون ${depositVal ? `(${depositVal} جنيه)` : "المطلوب"} لتأكيد الحجز.`;
 
   return (
     <div className="min-h-screen bg-[#fbfcfd]" dir="rtl">

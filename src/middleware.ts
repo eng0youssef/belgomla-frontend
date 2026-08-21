@@ -1,4 +1,4 @@
-﻿import { NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 /**
@@ -24,8 +24,8 @@ import type { NextRequest } from "next/server";
  *   fail with 401 → they see an empty dashboard and get redirected to login.
  */
 
-const ADMIN_SESSION_COOKIE = "belgomla_admin_session";
-const CUSTOMER_SESSION_COOKIE = "belgomla_customer_session";
+const ADMIN_SESSION_COOKIE = "slash_admin_session";
+const CUSTOMER_SESSION_COOKIE = "slash_customer_session";
 
 // Routes that require an authenticated admin session
 const ADMIN_PROTECTED = ["/admin/dashboard"];

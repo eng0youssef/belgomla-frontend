@@ -119,9 +119,9 @@ export default function OrdersHistoryPage() {
             ) : (
               orders.map((order) => {
                 const orderReferralLink = `${baseUrl}/product/${order.productId}?ref=${personalReferralCode}`;
-                const shareText = `أنا لسه حاجز ${order.productName} بسعر الجملة في موقع بالجملة! 🎉 خش احجز قطعتك معايا في نفس الكرتونة عشان نوفر مع بعض: ${orderReferralLink}`;
+                const shareText = `أنا لسه حاجز ${order.productName} بسعر الجملة في موقع سلاش! 🎉 خش احجز قطعتك معايا في نفس الكرتونة عشان نوفر مع بعض: ${orderReferralLink}`;
                 const depositText = order.depositAmount > 0 ? `(${order.depositAmount} جنيه)` : "المطلوب";
-                const depositReceiptMsg = `السلام عليكم، أنا ${fullName}، لسه عامل أوردر في موقع بالجملة.\nرقم الطلب: ${order.orderId.slice(0, 8).toUpperCase()}\nالكرتونة: #${order.cartonNumber}\nوحولت العربون ${depositText}.`;
+                const depositReceiptMsg = `السلام عليكم، أنا ${fullName}، لسه عامل أوردر في موقع سلاش.\nرقم الطلب: ${order.orderId.slice(0, 8).toUpperCase()}\nالكرتونة: #${order.cartonNumber}\nوحولت العربون ${depositText}.`;
 
                 return (
                   <div key={order.orderId} className="clean-card p-5 sm:p-6 bg-white space-y-5">

@@ -154,7 +154,7 @@ export default function ForgotPasswordPage() {
           <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-emerald-700 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl shadow-emerald-200/50">
             <ShoppingBag className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-2xl font-black text-gray-900">بالجملة</h1>
+          <h1 className="text-2xl font-black text-gray-900">SLASH | سلاش</h1>
           <p className="text-sm text-gray-500 font-bold">استعادة كلمة المرور</p>
         </div>
 

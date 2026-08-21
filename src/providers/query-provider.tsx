@@ -11,13 +11,13 @@ import { useState } from "react";
 function notifyQueryError(error: unknown) {
   const message =
     error instanceof Error ? error.message : "حدث خطأ أثناء تحميل البيانات";
-  console.error("[BelGomla Query Error]:", message);
+  console.error("[Slash Query Error]:", message);
 }
 
 function notifyMutationError(error: unknown) {
   const message =
     error instanceof Error ? error.message : "حدث خطأ أثناء تنفيذ العملية";
-  console.error("[BelGomla Mutation Error]:", message);
+  console.error("[Slash Mutation Error]:", message);
 }
 
 export function QueryProvider({ children }: { children: React.ReactNode }) {

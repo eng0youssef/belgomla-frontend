@@ -11,9 +11,9 @@ const cairo = Cairo({
 });
 
 export const metadata: Metadata = {
-  title: "بالجملة BelGomla - اشتري بسعر الجملة",
+  title: "SLASH | سلاش - مع سلاش.. السعر ببلاش",
   description:
-    "بالجملة.. من غير ما تكون تاجر! وفر فرق المحلات في جيبك. اشتري مع مجموعة واحصل على سعر الجملة",
+    "مع سلاش.. السعر ببلاش! وفر فرق المحلات في جيبك. اشتري مع مجموعة واحصل على سعر الجملة",
 };
 
 export default function RootLayout({

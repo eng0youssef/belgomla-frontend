@@ -25,14 +25,14 @@ export default function Header() {
             <div>
               <div className="flex items-center gap-1.5">
                 <span className="text-xl font-black text-slate-900 tracking-tight">
-                  بالجملة
+                  SLASH
                 </span>
                 <span className="bg-emerald-100 text-emerald-800 text-[10px] font-black px-1.5 py-0.5 rounded-md">
-                  BelGomla
+                  سلاش
                 </span>
               </div>
               <p className="text-[11px] text-slate-500 font-bold leading-none">
-                وفر فرق المحلات في جيبك
+                مع سلاش.. السعر ببلاش
               </p>
             </div>
           </Link>
@@ -56,7 +56,7 @@ export default function Header() {
           {/* Right Actions */}
           <div className="flex items-center gap-2.5">
             <a
-              href={whatsappChatUrl(SUPPORT_PHONE, "السلام عليكم، كنت محتاج استفسر عن الطلبات في موقع بالجملة")}
+              href={whatsappChatUrl(SUPPORT_PHONE, "السلام عليكم، كنت محتاج استفسر عن الطلبات في موقع سلاش")}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 bg-[#25D366]/10 text-[#128C7E] hover:bg-[#25D366]/20 px-3.5 py-2 rounded-xl text-xs font-black transition-all border border-[#25D366]/20"

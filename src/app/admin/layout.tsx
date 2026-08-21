@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "لوحة التحكم - بالجملة BelGomla",
+  title: "لوحة التحكم - SLASH | سلاش",
   description: "لوحة تحكم الإدارة",
 };
 
