@@ -82,7 +82,7 @@ export default function Footer() {
           <div className="space-y-3">
             <h4 className="text-sm font-black text-white">طرق الدفع والأمان</h4>
             <p className="text-xs text-slate-400 leading-relaxed">
-              بدون أي مقدم.. الدفع بالكامل عند الاستلام بعد المعاينة والفحص الدقيق مع المندوب.
+              الدفع بالكامل عند الاستلام بعد المعاينة والفحص مع مندوب التوصيل.
             </p>
             <div className="flex flex-wrap gap-2 pt-1">
               <span className="bg-slate-800 border border-slate-700 text-slate-300 text-xs px-2.5 py-1 rounded-md font-bold">

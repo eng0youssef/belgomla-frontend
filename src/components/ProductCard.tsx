@@ -74,7 +74,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           <div className="bg-slate-50/80 rounded-xl p-3.5 border border-slate-100 space-y-2.5">
             {/* Standard Price */}
             <div className="flex items-center justify-between text-xs">
-              <span className="text-slate-500 font-medium">سعر المحلات القطاعي:</span>
+              <span className="text-slate-500 font-medium">سعر التجزئة المعتاد:</span>
               <span className="text-slate-400 line-through font-bold text-sm">
                 {product.standardPrice} ج.م
               </span>
@@ -83,11 +83,11 @@ export default function ProductCard({ product }: ProductCardProps) {
             {/* Wholesale Price */}
             <div className="flex items-center justify-between border-t border-slate-200/60 pt-2">
               <div>
-                <span className="text-xs font-black text-emerald-800 block">
+                <span className="text-xs font-bold text-emerald-800 block">
                   سعر الجملة للقطعة
                 </span>
                 <span className="text-[10px] text-slate-500 font-medium">
-                  من غير ما تشتري كرتونة كاملة
+                  شراء مباشر بالقطعة
                 </span>
               </div>
               <div className="text-left">
@@ -100,12 +100,12 @@ export default function ProductCard({ product }: ProductCardProps) {
 
             {/* Friends Discount Teaser */}
             {product.minDiscountPrice < product.wholesalePrice && (
-              <div className="flex items-center justify-between bg-purple-50/70 border border-purple-100 rounded-lg px-2.5 py-1.5 text-xs text-purple-900 font-bold">
+              <div className="flex items-center justify-between bg-emerald-50/60 border border-emerald-100 rounded-lg px-2.5 py-1.5 text-xs text-emerald-900 font-medium">
                 <span className="flex items-center gap-1">
-                  <Users className="w-3.5 h-3.5 text-purple-600" />
-                  مع شلة صحابك يوصل لـ:
+                  <Users className="w-3.5 h-3.5 text-emerald-600" />
+                  خصم الشراء مع الأصدقاء:
                 </span>
-                <span className="font-black text-purple-700 text-sm">
+                <span className="font-bold text-emerald-700 text-sm">
                   {product.minDiscountPrice} ج.م
                 </span>
               </div>
@@ -116,27 +116,28 @@ export default function ProductCard({ product }: ProductCardProps) {
           <div className="space-y-1.5">
             <div className="flex justify-between items-center text-xs">
               <span className="font-bold text-slate-700 flex items-center gap-1">
-                📦 حجز الكرتونة #{carton?.cartonNumber || 1}
+                <Package className="w-3.5 h-3.5 text-slate-500" />
+                كرتونة الشحن #{carton?.cartonNumber || 1}
               </span>
-              <span className="font-black text-emerald-700">
-                {confirmedCount} من {capacity} حجزوا
+              <span className="font-bold text-emerald-700">
+                {confirmedCount} من {capacity} محجوز
               </span>
             </div>
 
-            <div className="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden relative">
+            <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden relative">
               <div
-                className="h-full bg-emerald-500 rounded-full transition-all duration-700"
+                className="h-full bg-emerald-600 rounded-full transition-all duration-700"
                 style={{ width: `${Math.max(5, progressPercent)}%` }}
               />
             </div>
 
-            <p className="text-[11px] text-slate-500 font-bold text-center">
+            <p className="text-[11px] text-slate-500 font-medium text-center">
               {remaining > 0 ? (
                 <>
-                  باقي <span className="text-emerald-700 font-black">{remaining} قطع</span> ونقفل الكرتونة وتطلع للشحن!
+                  المتبقي لاكتمال الكرتونة: <span className="text-emerald-700 font-bold">{remaining} قطع</span>
                 </>
               ) : (
-                "الكرتونة اكتملت وجاري تجهيز الشحن! 🎉"
+                "اكتملت الكرتونة وجاري التجهيز للشحن"
               )}
             </p>
           </div>
@@ -148,9 +149,9 @@ export default function ProductCard({ product }: ProductCardProps) {
         <Link href={`/product/${product.id}`} className="block w-full">
           <Button
             size="lg"
-            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black text-base h-12 rounded-xl shadow-sm hover:shadow-md flex items-center justify-center gap-2 group/btn"
+            className="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-sm h-11 rounded-xl shadow-xs flex items-center justify-center gap-2 group/btn"
           >
-            <span>احجز قطعتك في الكرتونة</span>
+            <span>طلب المنتج والتفاصيل</span>
             <ArrowLeft className="w-4 h-4 group-hover/btn:-translate-x-1 transition-transform" />
           </Button>
         </Link>
