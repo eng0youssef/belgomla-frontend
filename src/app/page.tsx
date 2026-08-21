@@ -77,14 +77,9 @@ export default function Home() {
     <main className="min-h-screen bg-[#fcfdfd]">
       <Header />
 
-      {/* Hero Section */}
-      <section className="relative pt-12 pb-16 px-4 overflow-hidden border-b border-slate-200/70 bg-gradient-to-b from-slate-50/70 via-white to-white">
-        <div className="max-w-4xl mx-auto text-center relative z-10">
-          {/* Single Simple Professional Hero Heading */}
-          <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black text-slate-900 leading-snug max-w-3xl mx-auto mb-10 tracking-tight">
-            مع سلاش.. السعر ببلاش! تسوّق بالقطعة <span className="text-emerald-700">بأسعار الجملة</span> مع المعاينة الكاملة والدفع عند الاستلام.
-          </h1>
-
+      {/* Hero / Features Bar */}
+      <section className="pt-6 pb-8 px-4 border-b border-slate-200/70 bg-gradient-to-b from-slate-50/70 to-white">
+        <div className="max-w-4xl mx-auto">
           {/* Features Grid */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl mx-auto text-right">
             <div className="bg-white p-4 rounded-xl border border-slate-200/90 shadow-xs flex items-center gap-3">
