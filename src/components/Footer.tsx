@@ -23,7 +23,7 @@ export default function Footer() {
             </p>
             <div className="pt-2">
               <a
-                href={whatsappChatUrl(SUPPORT_PHONE, "مرحباً، أود الاستفسار عن منصة سلاش")}
+                href={whatsappChatUrl(SUPPORT_PHONE)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 text-xs font-bold text-emerald-400 bg-emerald-950/60 border border-emerald-800/60 px-3.5 py-2 rounded-xl hover:bg-emerald-900/60 transition-colors"

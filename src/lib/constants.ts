@@ -32,4 +32,4 @@ export const PAYMENT_LABEL =
   process.env.NEXT_PUBLIC_PAYMENT_LABEL ?? "فودافون كاش / إنستاباي";
 
 export const SUPPORT_PHONE =
-  process.env.NEXT_PUBLIC_SUPPORT_PHONE ?? "201000000000";
+  process.env.NEXT_PUBLIC_SUPPORT_PHONE ?? "201055090171";

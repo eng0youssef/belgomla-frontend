@@ -53,7 +53,7 @@ export default function Header() {
           {/* Right Actions */}
           <div className="flex items-center gap-2.5">
             <a
-              href={whatsappChatUrl(SUPPORT_PHONE, "السلام عليكم، كنت محتاج استفسر عن الطلبات في موقع سلاش")}
+              href={whatsappChatUrl(SUPPORT_PHONE)}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 bg-[#25D366]/10 text-[#128C7E] hover:bg-[#25D366]/20 px-3.5 py-2 rounded-xl text-xs font-black transition-all border border-[#25D366]/20"
