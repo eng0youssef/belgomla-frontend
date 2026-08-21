@@ -19,7 +19,6 @@ import {
 } from "lucide-react";
 import Header from "@/components/Header";
 import ProductCard from "@/components/ProductCard";
-import ActivityTicker from "@/components/ActivityTicker";
 import Footer from "@/components/Footer";
 import { useActiveProducts } from "@/hooks/use-products";
 import { Button } from "@/components/ui/button";
@@ -416,7 +415,6 @@ export default function Home() {
       </section>
 
       <Footer />
-      <ActivityTicker />
     </main>
   );
 }

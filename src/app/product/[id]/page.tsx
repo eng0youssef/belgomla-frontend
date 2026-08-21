@@ -24,7 +24,6 @@ import {
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import ActivityTicker from "@/components/ActivityTicker";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useProduct } from "@/hooks/use-products";
@@ -455,7 +454,6 @@ export default function ProductPage() {
       </div>
 
       <Footer />
-      <ActivityTicker />
     </main>
   );
 }
