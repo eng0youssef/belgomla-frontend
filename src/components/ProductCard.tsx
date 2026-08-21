@@ -29,17 +29,13 @@ export default function ProductCard({ product }: ProductCardProps) {
         {/* Image Container */}
         <div className="relative aspect-square bg-slate-50 overflow-hidden border-b border-slate-100">
           {/* Top Badges */}
-          <div className="absolute top-3 right-3 z-10 flex flex-col gap-1.5 items-end">
-            <span className="bg-emerald-600 text-white text-xs font-black px-2.5 py-1 rounded-lg shadow-sm flex items-center gap-1">
-              <Sparkles className="w-3 h-3" />
-              سعر الجملة
-            </span>
-            {savingsAmount > 0 && (
-              <span className="bg-amber-500 text-white text-[11px] font-black px-2 py-0.5 rounded-md shadow-sm">
+          {savingsAmount > 0 && (
+            <div className="absolute top-3 right-3 z-10">
+              <span className="bg-amber-500 text-white text-[11px] font-black px-2.5 py-1 rounded-lg shadow-xs">
                 وفرت {savingsAmount} ج ({savingsPercent}%)
               </span>
-            )}
-          </div>
+            </div>
+          )}
 
           {isTrustedImageUrl(product.imageUrl) ? (
             <Image
