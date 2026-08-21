@@ -232,7 +232,7 @@ export default function CustomerRegisterPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, villageName: e.target.value })
                     }
-                    placeholder="اكتب عنوانك بالتفصيل (المدينة، الحي، الشارع)..."
+                    placeholder="اكتب عنوانك بالتفصيل..."
                     className="h-12 bg-slate-50/50"
                     required
                   />

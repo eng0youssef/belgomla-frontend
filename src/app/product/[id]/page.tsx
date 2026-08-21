@@ -380,7 +380,7 @@ export default function ProductPage() {
                         icon={<MapPin className="w-4 h-4 text-slate-400" />}
                         value={formData.villageName}
                         onChange={(e) => setFormData({ ...formData, villageName: e.target.value })}
-                        placeholder="اكتب عنوان التوصيل بالتفصيل (المدينة، الحي، الشارع)..."
+                        placeholder="اكتب عنوان التوصيل بالتفصيل..."
                         className="h-12 text-sm bg-slate-50/50"
                         required
                       />
