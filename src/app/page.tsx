@@ -26,21 +26,18 @@ import { useActiveProducts } from "@/hooks/use-products";
 const TESTIMONIALS = [
   {
     name: "مروة عبد الرحمن",
-    location: "المنصورة - حي الجامعة",
     comment: "بصراحة كنت قلقانة في الأول، بس المندوب جه وقالي افتحي شوفي حاجتك واتأكدي منها قبل ما تدفعي ولا مليم.. الخامة طلعت تحفة وفرق السعر عن المحلات محترم جداً.",
     rating: 5,
     tag: "وفّرت ٢٨٠ ج",
   },
   {
     name: "أحمد حسن",
-    location: "بلقاس",
     comment: "فكرة ممتازة بجد، بعت اللينك لاثنين صحابي واشتروا معايا ونزلنا في السعر أكتر.. والأوردر وصل لحد باب البيت في ميعاده بالظبط.",
     rating: 5,
     tag: "طلب مع أصحابه",
   },
   {
     name: "سارة محمود",
-    location: "شربين",
     comment: "أحسن حاجة إن مفيش وجع دماغ ولف في الأسواق عشان اشتري بسعر الجملة، طلبت قطعتين وجوم بسعر الكرتونة والدفع كاش بعد ما عاينت.",
     rating: 5,
     tag: "عميلة متكررة",
@@ -249,7 +246,6 @@ export default function Home() {
               <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
                 <div>
                   <h4 className="text-xs font-bold text-slate-900">{t.name}</h4>
-                  <p className="text-[10px] text-slate-400 font-medium">{t.location}</p>
                 </div>
                 <div className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-600">
                   {t.name.split(" ")[0][0]}
