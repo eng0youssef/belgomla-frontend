@@ -77,9 +77,19 @@ export default function Home() {
     <main className="min-h-screen bg-[#fcfdfd]">
       <Header />
 
-      {/* Hero / Features Bar */}
-      <section className="pt-6 pb-8 px-4 border-b border-slate-200/70 bg-gradient-to-b from-slate-50/70 to-white">
-        <div className="max-w-4xl mx-auto">
+      {/* Hero Section */}
+      <section className="relative pt-10 pb-12 px-4 overflow-hidden border-b border-slate-200/70 bg-gradient-to-b from-slate-50/70 via-white to-white">
+        <div className="max-w-4xl mx-auto text-center relative z-10">
+          {/* Main Title */}
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 leading-tight mb-3.5 tracking-tight">
+            تسوّق بالقطعة <span className="text-emerald-700">بأسعار الجملة</span>
+          </h1>
+
+          {/* Subtitle */}
+          <p className="text-slate-600 text-sm sm:text-base font-medium max-w-xl mx-auto mb-9 leading-relaxed">
+            مع سلاش.. السعر ببلاش. افحص وعاين طلبك بالكامل وادفع عند الاستلام.
+          </p>
+
           {/* Features Grid */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl mx-auto text-right">
             <div className="bg-white p-4 rounded-xl border border-slate-200/90 shadow-xs flex items-center gap-3">
