@@ -15,7 +15,6 @@ import {
   ArrowRight,
   ShieldCheck,
   CheckCircle2,
-  Gift,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -255,26 +254,10 @@ export default function CustomerRegisterPage() {
                   />
                 </div>
 
-                <div>
-                  <label className="text-xs font-black text-slate-700 mb-1.5 block">
-                    كود دعوة صديق (لو معاك)
-                  </label>
-                  <Input
-                    icon={<Gift className="w-4 h-4 text-purple-500" />}
-                    value={formData.referralCode}
-                    onChange={(e) =>
-                      setFormData({ ...formData, referralCode: e.target.value })
-                    }
-                    placeholder="مثال: ABC123XYZ"
-                    dir="ltr"
-                    className="h-12 bg-slate-50/50"
-                  />
-                </div>
-
                 <Button
                   type="submit"
                   size="lg"
-                  className="w-full text-base font-black h-12 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm mt-2"
+                  className="w-full text-base font-bold h-12 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm mt-4"
                   disabled={loading}
                 >
                   {loading ? (
@@ -283,7 +266,7 @@ export default function CustomerRegisterPage() {
                       جاري إرسال الرمز...
                     </span>
                   ) : (
-                    "متابعة وإرسال كود التحقق 📩"
+                    "متابعة وإرسال كود التحقق"
                   )}
                 </Button>
 
