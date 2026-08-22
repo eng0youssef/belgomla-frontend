@@ -147,7 +147,7 @@ export default function CustomerRegisterPage() {
                 <ShoppingBag className="w-6 h-6" />
               </div>
               <h1 className="text-2xl font-black text-slate-900">
-                {step === "FORM" ? "إنشاء حساب جديد 🎉" : "تأكيد بريدك الإلكتروني 📩"}
+                {step === "FORM" ? "إنشاء حساب جديد" : "تأكيد بريدك الإلكتروني"}
               </h1>
               <p className="text-xs text-slate-500 font-bold">
                 {step === "FORM"

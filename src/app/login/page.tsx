@@ -41,7 +41,7 @@ export default function CustomerLoginPage() {
                 <ShoppingBag className="w-6 h-6" />
               </div>
               <h1 className="text-2xl font-black text-slate-900">
-                تسجيل الدخول لحسابك 👋
+                تسجيل الدخول لحسابك
               </h1>
               <p className="text-xs text-slate-500 font-bold">
                 ادخل رقم موبايلك وكلمة المرور لمتابعة طلباتك
