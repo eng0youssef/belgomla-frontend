@@ -279,8 +279,8 @@ export default function ProductPage() {
                       يتبقى <strong className="text-emerald-700 font-black">{remainingCount} حجز</strong> فقط وتكتمل الكرتونة ونبدأ شحنها فوراً لباب بيتك!
                     </span>
                   ) : (
-                    <span className="text-emerald-700 font-black">
-                      الكرتونة اكتملت بالكامل وجاري تجهيز الشحن للمشترين! 🎉
+                    <span className="text-emerald-700 font-bold">
+                      اكتملت الكرتونة بالكامل وجاري تجهيز الشحن للمشترين
                     </span>
                   )}
                 </div>
@@ -312,7 +312,7 @@ export default function ProductPage() {
             <div className="clean-card p-5 sm:p-7 bg-white shadow-lg border-slate-200">
               <div className="border-b border-slate-100 pb-4 mb-5">
                 <h2 className="text-xl font-black text-slate-900">
-                  احجز قطعتك دلوقتي 🎯
+                  احجز قطعتك الآن
                 </h2>
                 <p className="text-xs text-slate-500 font-medium mt-1">
                   سجل بياناتك ومكانك في الكرتونة هيتحجز فوراً
@@ -425,21 +425,21 @@ export default function ProductPage() {
                 {/* Submit Button */}
                 <Button
                   size="lg"
-                  className="w-full text-base font-black h-13 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-md mt-2"
+                  className="w-full text-base font-bold h-13 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-md mt-2"
                   onClick={handleSubmit}
                   disabled={!isFormValid || createOrderMutation.isPending}
                 >
                   {createOrderMutation.isPending ? (
                     <span className="flex items-center gap-2">
-                      <Loader2 className="w-5 h-5 animate-spin" /> جاري تسجيل حجزك...
+                      <Loader2 className="w-5 h-5 animate-spin" /> جاري تسجيل طلبك...
                     </span>
                   ) : (
-                    "تأكيد الحجز ومتابعة العربون 🎯"
+                    "تأكيد طلب الشراء"
                   )}
                 </Button>
 
-                <p className="text-[11px] text-slate-400 text-center font-bold">
-                  🔒 بياناتك آمنة تماماً، ولن يتم خصم أي مبالغ إضافية
+                <p className="text-[11px] text-slate-500 text-center font-medium">
+                  بياناتك آمنة تماماً، والدفع بالكامل عند الاستلام بعد المعاينة
                 </p>
               </div>
             </div>

@@ -298,14 +298,14 @@ export default function CustomerRegisterPage() {
                   disabled={loading}
                 />
 
-                <p className="text-[11px] text-slate-400 text-center font-medium bg-slate-50 p-2.5 rounded-xl border border-slate-100">
-                  💡 مش لاقي الرسالة في صندوق الوارد؟ شيك على مجلد الرسائل غير المرغوب فيها (Spam).
+                <p className="text-[11px] text-slate-500 text-center font-medium bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                  إذا لم تجد الرسالة في صندوق الوارد، تفقد مجلد الرسائل غير المرغوب فيها (Spam).
                 </p>
 
                 <Button
                   type="submit"
                   size="lg"
-                  className="w-full text-base font-black h-12 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm"
+                  className="w-full text-base font-bold h-12 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm"
                   disabled={loading || otpCode.length !== 6}
                 >
                   {loading ? (
@@ -316,7 +316,7 @@ export default function CustomerRegisterPage() {
                   ) : (
                     <span className="flex items-center justify-center gap-2">
                       <CheckCircle2 className="w-4 h-4" />
-                      تأكيد وإنشاء الحساب 🚀
+                      تأكيد وإنشاء الحساب
                     </span>
                   )}
                 </Button>

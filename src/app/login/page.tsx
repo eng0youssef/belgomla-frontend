@@ -111,7 +111,7 @@ export default function CustomerLoginPage() {
                     جاري تسجيل الدخول...
                   </span>
                 ) : (
-                  "دخول للحساب 🚀"
+                  "دخول للحساب"
                 )}
               </Button>
 
