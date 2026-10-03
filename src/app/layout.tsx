@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Cairo } from "next/font/google";
 import { QueryProvider } from "@/providers/query-provider";
 import { Analytics } from "@vercel/analytics/next";
+import BottomNav from "@/components/BottomNav";
 import "./globals.css";
 
 const cairo = Cairo({
@@ -13,7 +14,7 @@ const cairo = Cairo({
 export const metadata: Metadata = {
   title: "SLASH | سلاش - مع سلاش.. السعر ببلاش",
   description:
-    "مع سلاش.. السعر ببلاش! وفر فرق المحلات في جيبك. اشتري مع مجموعة واحصل على سعر الجملة",
+    "مع سلاش.. السعر ببلاش! وفر فرق المحلات في جيبك. اشتري بالقطعة بسعر كرتونة الجملة، كاش عند الاستلام بعد المعاينة.",
 };
 
 export default function RootLayout({
@@ -23,8 +24,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ar" dir="rtl" className={`${cairo.variable}`}>
-      <body className="min-h-screen bg-background font-cairo antialiased">
+      <body className="min-h-screen bg-background font-cairo antialiased selection:bg-emerald-200 selection:text-emerald-900 pb-16 md:pb-0">
         <QueryProvider>{children}</QueryProvider>
+        <BottomNav />
         <Analytics />
       </body>
     </html>

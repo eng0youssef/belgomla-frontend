@@ -88,6 +88,26 @@
   box-shadow: 0 0 25px -3px rgba(245, 158, 11, 0.35);
 }
 
+/* Glass Panels */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(226, 232, 240, 0.85);
+}
+
+.glass-panel-dark {
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Safe padding for mobile bottom bar */
+.pb-safe {
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+}
+
 /* Shimmer effect for progress bars */
 @keyframes shimmer-smooth {
   0% { transform: translateX(100%); }
@@ -97,5 +117,3 @@
 .animate-shimmer-smooth {
   animation: shimmer-smooth 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
-
-
