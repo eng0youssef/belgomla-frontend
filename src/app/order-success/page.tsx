@@ -8,7 +8,6 @@ import {
   Copy,
   MessageCircle,
   Package,
-  CreditCard,
   ArrowRight,
   User,
   Loader2,
@@ -16,12 +15,15 @@ import {
   Share2,
   Check,
   Sparkles,
+  ShieldCheck,
+  Banknote,
+  Truck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { whatsappShareUrl, whatsappChatUrl } from "@/lib/utils";
 import { getCustomerToken, apiClient } from "@/services/api-client";
 import type { OrderResponse } from "@/types/api";
-import { PAYMENT_PHONE, PAYMENT_LABEL, SUPPORT_PHONE } from "@/lib/constants";
+import { SUPPORT_PHONE } from "@/lib/constants";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
@@ -46,7 +48,6 @@ function OrderSuccessContent() {
   const params = useSearchParams();
   const router = useRouter();
   const [copiedLink, setCopiedLink] = useState(false);
-  const [copiedPhone, setCopiedPhone] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
@@ -56,11 +57,18 @@ function OrderSuccessContent() {
   const orderId = params.get("orderId") ?? "";
   const { data: order, isLoading, isError } = useOrderById(orderId);
 
-  const referralCode = sanitizeCode(order?.personalReferralCode);
+  // Safely unwrap order from API envelope if wrapped in data
+  const rawOrder = order as any;
+  const orderData: OrderResponse | null = rawOrder?.data || rawOrder || null;
+
+  const orderShortCode = (orderData?.orderId || orderId || "").slice(0, 8).toUpperCase();
+  const customerName = orderData?.customerName || "يا بطل";
+  const cartonNum = orderData?.cartonNumber || 1;
+  const referralCode = sanitizeCode(orderData?.personalReferralCode);
   const origin = typeof window !== "undefined" ? window.location.origin : "";
   const referralLink = referralCode ? `${origin}?ref=${referralCode}` : "";
   const shareText = referralLink
-    ? `أنا لسه حاجز بسعر الجملة من موقع سلاش! 🎉 خش احجز قطعتك معايا في نفس الكرتونة عشان نوفر مع بعض: ${referralLink}`
+    ? `أنا لسه حاجز بسعر جملة الكرتونة من موقع سلاش! 🎉 خش احجز قطعتك معايا في نفس الكرتونة عشان نوفر مع بعض: ${referralLink}`
     : "";
 
   const copyLink = () => {
@@ -68,12 +76,6 @@ function OrderSuccessContent() {
     navigator.clipboard.writeText(referralLink);
     setCopiedLink(true);
     setTimeout(() => setCopiedLink(false), 2000);
-  };
-
-  const copyPhone = () => {
-    navigator.clipboard.writeText(PAYMENT_PHONE.replace(/\s+/g, ""));
-    setCopiedPhone(true);
-    setTimeout(() => setCopiedPhone(false), 2000);
   };
 
   if (!orderId) {
@@ -97,7 +99,7 @@ function OrderSuccessContent() {
     );
   }
 
-  if (isError || !order) {
+  if (isError || !orderData) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 p-6 text-center" dir="rtl">
         <AlertCircle className="w-16 h-16 text-red-500 mb-4" />
@@ -112,12 +114,8 @@ function OrderSuccessContent() {
     );
   }
 
-  const depositVal = order.depositAmount > 0 ? order.depositAmount : null;
-  const depositText = depositVal ? `${depositVal} ج.م` : "الرمزي";
-  const remainingVal = depositVal ? Math.max(0, order.finalPrice - depositVal) : null;
-  const remainingText = remainingVal !== null ? `${remainingVal} ج.م` : "باقي الحساب";
-
-  const depositReceiptMsg = `السلام عليكم، أنا ${order.customerName}، لسه عامل أوردر في موقع سلاش.\nرقم الطلب: ${order.orderId.slice(0, 8).toUpperCase()}\nالكرتونة: #${order.cartonNumber}\nوحولت العربون ${depositVal ? `(${depositVal} جنيه)` : "المطلوب"} لتأكيد الحجز.`;
+  const finalPrice = orderData.finalPrice ?? 0;
+  const whatsappConfirmMsg = `السلام عليكم، أنا ${customerName}، لسه حاجز بسعر جملة الكرتونة في موقع سلاش.\nرقم الطلب: ${orderShortCode}\nالكرتونة: #${cartonNum}\nجاهز للاستلام كاش بعد المعاينة الكاملة إن شاء الله.`;
 
   return (
     <div className="min-h-screen bg-[#fbfcfd]" dir="rtl">
@@ -125,78 +123,75 @@ function OrderSuccessContent() {
 
       <div className="max-w-3xl mx-auto px-4 py-8 sm:py-12 space-y-6">
         {/* Success Top Banner */}
-        <div className="clean-card bg-emerald-600 text-white p-6 sm:p-8 rounded-3xl text-center shadow-lg relative overflow-hidden">
+        <div className="clean-card bg-gradient-to-r from-emerald-600 to-teal-600 text-white p-6 sm:p-8 rounded-3xl text-center shadow-xl relative overflow-hidden">
           <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/30">
             <CheckCircle2 className="w-10 h-10 text-white" />
           </div>
           <h1 className="text-2xl sm:text-3xl font-black mb-2">
-            تم تسجيل حجزك بنجاح يا {order.customerName}! 🎉
+            تم تسجيل حجزك بنجاح يا {customerName}! 🎉
           </h1>
-          <p className="text-emerald-100 text-xs sm:text-sm font-bold max-w-md mx-auto">
-            مكانك اتحجز في كرتونة رقم <strong className="text-white font-black">#{order.cartonNumber}</strong>.. اتبع الخطوات البسيطة التالية لتأكيد حجزك رسمياً:
+          <p className="text-emerald-100 text-xs sm:text-sm font-bold max-w-lg mx-auto leading-relaxed">
+            مكانك اتحجز رسمي في كرتونة شحن رقم <strong className="text-white font-black">#{cartonNum}</strong>.. والدفع بالكامل كاش عند الاستلام بعد المعاينة والفحص 100%!
           </p>
         </div>
 
         {/* Action Steps Container */}
         <div className="space-y-4">
-          {/* Step 1: Transfer Deposit */}
-          <div className="clean-card p-5 sm:p-6 bg-white space-y-4">
+          {/* Step 1: Cash on Delivery Reassurance */}
+          <div className="clean-card p-5 sm:p-6 bg-white space-y-3 border-slate-200">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-amber-500 text-white flex items-center justify-center text-sm font-black flex-shrink-0">
+              <div className="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center text-sm font-black flex-shrink-0">
                 ١
               </div>
               <div>
-                <h3 className="font-black text-slate-900 text-base">
-                  حوّل العربون الرمزي {depositVal ? `(${depositVal} ج.م)` : ""} لتثبيت مكانك
+                <h3 className="font-black text-slate-900 text-base flex items-center gap-1.5">
+                  <Banknote className="w-4 h-4 text-emerald-600" />
+                  <span>الدفع كاش فقط عند الاستلام بعد المعاينة 100%</span>
                 </h3>
                 <p className="text-xs text-slate-500 font-medium">
-                  عبر فودافون كاش أو إنستاباي على الرقم التالي:
+                  المطلوب الآن: 0 ج.م (مفيش أي دفع مسبق نهائياً)
                 </p>
               </div>
             </div>
 
-            <div className="bg-slate-50 rounded-2xl p-4 border border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="bg-emerald-50/80 rounded-2xl p-4 border border-emerald-100 flex items-center justify-between">
               <div>
                 <span className="text-[11px] text-slate-500 font-bold block mb-0.5">
-                  رقم التحويل ({PAYMENT_LABEL}):
+                  المبلغ المطلوب عند استلام الشحنة:
                 </span>
-                <span className="text-2xl font-black text-slate-900 tracking-wider font-mono" dir="ltr">
-                  {PAYMENT_PHONE}
+                <span className="text-2xl font-black text-emerald-700">
+                  {finalPrice} ج.م
                 </span>
               </div>
-              <Button
-                variant="outline"
-                onClick={copyPhone}
-                className="gap-2 font-bold text-xs h-10 rounded-xl bg-white border-slate-300"
-              >
-                {copiedPhone ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
-                <span>{copiedPhone ? "تم نسخ الرقم!" : "نسخ الرقم"}</span>
-              </Button>
+              <span className="text-xs bg-white text-emerald-800 font-bold px-3 py-1 rounded-xl border border-emerald-200">
+                💵 كاش مع المندوب
+              </span>
             </div>
 
-            <p className="text-[11px] text-amber-800 bg-amber-50 p-2.5 rounded-xl font-bold border border-amber-200/60">
-              💡 ملحوظة: باقي المبلغ ({remainingText}) بتدفعه للمندوب عند الاستلام بعد المعاينة الكاملة للمنتج.
+            <p className="text-[11px] text-emerald-800 bg-emerald-50/50 p-2.5 rounded-xl font-bold border border-emerald-200/60">
+              💡 افتح العلبة وافحص المنتج وتأكد منه بنفسك مع الكابتن.. عجبك ادفع كاش، ما عجبكش ولا مليم.
             </p>
           </div>
 
           {/* Step 2: Confirm on WhatsApp */}
-          <div className="clean-card p-5 sm:p-6 bg-white space-y-4">
+          <div className="clean-card p-5 sm:p-6 bg-white space-y-4 border-slate-200">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center text-sm font-black flex-shrink-0">
+              <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-black flex-shrink-0">
                 ٢
               </div>
               <div>
-                <h3 className="font-black text-slate-900 text-base">
-                  بلّغنا على الواتساب بعد التحويل لتأكيد الحجز فوراً
+                <h3 className="font-black text-slate-900 text-base flex items-center gap-1.5">
+                  <Truck className="w-4 h-4 text-blue-600" />
+                  <span>متابعة الشحن والتوصيل عبر الواتساب</span>
                 </h3>
                 <p className="text-xs text-slate-500 font-medium">
-                  اضغط على الزر وهيفتحلك محادثة جاهزة برقم أوردرك
+                  الكابتن هيتواصل معاك لتأكيد ميعاد التوصيل.. وتقدر تراسلنا في أي وقت
                 </p>
               </div>
             </div>
 
             <a
-              href={whatsappChatUrl(SUPPORT_PHONE, depositReceiptMsg)}
+              href={whatsappChatUrl(SUPPORT_PHONE, whatsappConfirmMsg)}
               target="_blank"
               rel="noopener noreferrer"
               className="block w-full"
@@ -206,7 +201,7 @@ function OrderSuccessContent() {
                 className="w-full bg-[#25D366] hover:bg-[#1ebe5d] text-white font-black text-sm sm:text-base h-12 rounded-xl shadow-sm flex items-center justify-center gap-2"
               >
                 <MessageCircle className="w-5 h-5" />
-                <span>إرسال إشعار التحويل على الواتساب 💬</span>
+                <span>متابعة طلبي مع خدمة العملاء على الواتساب 💬</span>
               </Button>
             </a>
           </div>
@@ -274,7 +269,7 @@ function OrderSuccessContent() {
           )}
 
           {/* Order Details Accordion/Summary */}
-          <div className="clean-card p-5 bg-white space-y-3">
+          <div className="clean-card p-5 bg-white space-y-3 border-slate-200">
             <h4 className="font-black text-slate-800 text-sm flex items-center gap-2">
               <Package className="w-4 h-4 text-emerald-600" />
               تفاصيل طلبك المسجل:
@@ -282,21 +277,25 @@ function OrderSuccessContent() {
             <div className="space-y-2 text-xs border-t border-slate-100 pt-3">
               <div className="flex justify-between text-slate-600">
                 <span>رقم الطلب:</span>
-                <span className="font-mono font-bold" dir="ltr">{order.orderId.slice(0, 8).toUpperCase()}</span>
+                <span className="font-mono font-bold" dir="ltr">{orderShortCode}</span>
               </div>
               <div className="flex justify-between text-slate-600">
                 <span>رقم الكرتونة:</span>
-                <span className="font-bold text-slate-900">#{order.cartonNumber}</span>
+                <span className="font-bold text-slate-900">#{cartonNum}</span>
               </div>
-              {order.appliedDiscount > 0 && (
+              <div className="flex justify-between text-slate-600">
+                <span>طريقة الدفع:</span>
+                <span className="font-bold text-emerald-700">كاش عند الاستلام بعد المعاينة 💵</span>
+              </div>
+              {(orderData.appliedDiscount || 0) > 0 && (
                 <div className="flex justify-between text-emerald-700 font-bold">
-                  <span>خصم الإحالة المطبق:</span>
-                  <span>- {order.appliedDiscount} ج.م</span>
+                  <span>خصم الشلة المطبق:</span>
+                  <span>- {orderData.appliedDiscount} ج.م</span>
                 </div>
               )}
               <div className="flex justify-between text-slate-900 font-black text-sm pt-2 border-t border-slate-100">
-                <span>إجمالي سعر القطعة:</span>
-                <span className="text-emerald-700">{order.finalPrice} ج.م</span>
+                <span>المبلغ المطلوب عند الاستلام كاش:</span>
+                <span className="text-emerald-700 font-black">{finalPrice} ج.م</span>
               </div>
             </div>
           </div>
@@ -342,4 +341,3 @@ export default function OrderSuccessPage() {
     </Suspense>
   );
 }
-
