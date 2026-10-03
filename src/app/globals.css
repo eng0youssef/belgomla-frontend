@@ -63,11 +63,29 @@
 
 /* Subtle modern card styling */
 .clean-card {
-  @apply bg-white rounded-2xl border border-slate-200/80 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.05),0_10px_20px_-4px_rgba(0,0,0,0.03)];
+  @apply bg-white rounded-3xl border border-slate-200/90 shadow-[0_4px_20px_-2px_rgba(0,0,0,0.05),0_10px_25px_-4px_rgba(0,0,0,0.03)];
 }
 
 .clean-card-hover {
-  @apply transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:-translate-y-0.5;
+  @apply transition-all duration-300 hover:shadow-[0_12px_35px_-5px_rgba(16,185,129,0.15)] hover:border-emerald-400/50 hover:-translate-y-1;
+}
+
+/* Neo-Commerce Packaging & Gamified Box */
+.carton-crate {
+  @apply bg-gradient-to-b from-amber-50/70 via-white to-amber-50/30 border-2 border-amber-200/90 rounded-3xl p-5 sm:p-6 shadow-md relative overflow-hidden;
+}
+
+.carton-tape {
+  @apply inline-flex items-center gap-1.5 bg-amber-400/20 text-amber-950 border border-amber-400/40 text-[11px] font-black px-3.5 py-1 rounded-full shadow-sm;
+}
+
+/* Glow effects */
+.glow-emerald {
+  box-shadow: 0 0 25px -3px rgba(16, 185, 129, 0.35);
+}
+
+.glow-amber {
+  box-shadow: 0 0 25px -3px rgba(245, 158, 11, 0.35);
 }
 
 /* Shimmer effect for progress bars */
@@ -79,4 +97,5 @@
 .animate-shimmer-smooth {
   animation: shimmer-smooth 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
+
 

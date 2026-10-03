@@ -19,10 +19,13 @@ import {
   Sparkles,
   Clock,
   Banknote,
+  Flame,
 } from "lucide-react";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import GamifiedCartonBox from "@/components/GamifiedCartonBox";
+import SquadSavingsCalculator from "@/components/SquadSavingsCalculator";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useProduct } from "@/hooks/use-products";
@@ -119,7 +122,7 @@ export default function ProductPage() {
   const savingsPercent = Math.round((savingsAmount / product.standardPrice) * 100);
 
   return (
-    <main className="min-h-screen bg-[#fbfcfd] pb-24 lg:pb-12" dir="rtl">
+    <main className="min-h-screen bg-[#f8fafc] pb-24 lg:pb-12" dir="rtl">
       <Header />
 
       <div className="max-w-6xl mx-auto px-4 py-6 sm:py-10">
@@ -139,19 +142,20 @@ export default function ProductPage() {
             <div className="clean-card p-5 sm:p-7 bg-white">
               {/* Product Badges */}
               <div className="flex items-center justify-between gap-2 mb-4">
-                <span className="bg-emerald-50 text-emerald-800 text-xs font-black px-3 py-1.5 rounded-xl border border-emerald-200/80 flex items-center gap-1.5">
+                <span className="bg-emerald-50 text-emerald-800 text-xs font-black px-3.5 py-1.5 rounded-xl border border-emerald-200/80 flex items-center gap-1.5">
                   <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
                   حجز مباشر بسعر كرتونة الجملة 📦
                 </span>
                 {savingsAmount > 0 && (
-                  <span className="bg-amber-50 text-amber-800 text-xs font-black px-3 py-1.5 rounded-xl border border-amber-200/80">
-                    وفرت {savingsAmount} ج.م في جيبك ({savingsPercent}%) 🔥
+                  <span className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-black px-3.5 py-1.5 rounded-xl shadow-sm flex items-center gap-1">
+                    <Flame className="w-3.5 h-3.5 fill-white text-white" />
+                    وفرت {savingsAmount} ج.م في جيبك ({savingsPercent}%)
                   </span>
                 )}
               </div>
 
               {/* Product Image */}
-              <div className="aspect-square bg-slate-50 rounded-2xl overflow-hidden relative border border-slate-100 mb-6">
+              <div className="aspect-square bg-slate-50 rounded-3xl overflow-hidden relative border border-slate-100 mb-6">
                 {isTrustedImageUrl(product.imageUrl) ? (
                   <Image
                     src={product.imageUrl!}
@@ -175,7 +179,7 @@ export default function ProductPage() {
               </h1>
 
               {/* Pricing Breakdown Box */}
-              <div className="bg-slate-50/90 rounded-2xl p-4 sm:p-5 border border-slate-200/80 space-y-3">
+              <div className="bg-gradient-to-br from-slate-50 to-emerald-50/30 rounded-2xl p-4 sm:p-5 border border-slate-200/80 space-y-3">
                 <div className="flex items-center justify-between text-xs sm:text-sm">
                   <span className="text-slate-500 font-bold">سعر المحلات والمولات القطاعي:</span>
                   <span className="font-bold line-through text-rose-500 text-base">
@@ -189,7 +193,7 @@ export default function ProductPage() {
                       سعر سلاش الصافي للقطعة
                     </span>
                     <span className="text-xs text-slate-500 font-medium">
-                      من غير ما تشتري كرتونة جملة لوحدك
+                      شراء فوري بالقطعة بسعر الجملة
                     </span>
                   </div>
                   <div className="text-left">
@@ -201,94 +205,42 @@ export default function ProductPage() {
                 </div>
 
                 {product.minDiscountPrice < product.wholesalePrice && (
-                  <div className="flex items-center justify-between bg-purple-50/80 border border-purple-100 rounded-xl p-3 text-xs text-purple-900 font-bold">
+                  <div className="flex items-center justify-between bg-purple-100/70 border border-purple-200 rounded-xl p-3 text-xs text-purple-950 font-bold">
                     <span className="flex items-center gap-1.5">
-                      <Users className="w-4 h-4 text-purple-600" />
-                      سعر شلة الصحاب (لما تدعو صحابك في نفس الكرتونة):
+                      <Users className="w-4 h-4 text-purple-700" />
+                      سعر شلة الصحاب (مع أصحابك):
                     </span>
-                    <span className="font-black text-purple-700 text-base">
-                      {product.minDiscountPrice} ج.م 👥
+                    <span className="font-black text-purple-800 text-base">
+                      {product.minDiscountPrice} ج.م 🔥
                     </span>
                   </div>
                 )}
               </div>
             </div>
 
-            {/* Visual Carton Status Card */}
-            <div className="clean-card p-5 sm:p-6 bg-white space-y-5">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="font-black text-slate-900 text-base sm:text-lg flex items-center gap-2">
-                    <Package className="w-5 h-5 text-emerald-600" />
-                    حالة الكرتونة #{carton?.cartonNumber || 1}
-                  </h3>
-                  <p className="text-xs text-slate-500 font-medium mt-0.5">
-                    الكرتونة سعتها {capacity} قطع مشتركة.. لما تكتمل بتتحرك فوراً على باب بيتك
-                  </p>
-                </div>
-                <span className="text-xs font-black bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-1 rounded-xl">
-                  {confirmedCount} من {capacity} مقاعد محجوزة
-                </span>
-              </div>
+            {/* Gamified 3D/Crate Carton Box */}
+            <GamifiedCartonBox
+              cartonNumber={carton?.cartonNumber || 1}
+              capacity={capacity}
+              confirmedCount={confirmedCount}
+              onSlotClick={() => {
+                document.getElementById("booking-form")?.scrollIntoView({ behavior: "smooth" });
+              }}
+            />
 
-              {/* Visual Slots Grid */}
-              <div>
-                <p className="text-xs font-bold text-slate-600 mb-2.5">
-                  توزيع مقاعد الكرتونة:
-                </p>
-                <div className="grid grid-cols-5 sm:grid-cols-10 gap-2">
-                  {Array.from({ length: capacity }).map((_, index) => {
-                    const isFilled = index < confirmedCount;
-                    const isNextSlot = index === confirmedCount;
+            {/* Interactive Squad Savings Calculator */}
+            <SquadSavingsCalculator
+              basePrice={product.wholesalePrice}
+              minPrice={product.minDiscountPrice}
+              referralCode={formData.referralCode}
+            />
 
-                    return (
-                      <div
-                        key={index}
-                        className={`aspect-square rounded-xl flex flex-col items-center justify-center p-1 border text-center transition-all ${
-                          isFilled
-                            ? "bg-emerald-50 border-emerald-300 text-emerald-700 shadow-xs"
-                            : isNextSlot
-                            ? "bg-amber-50 border-amber-400 text-amber-800 ring-2 ring-amber-300 ring-offset-1 animate-pulse"
-                            : "bg-slate-50 border-slate-200 text-slate-400"
-                        }`}
-                        title={isFilled ? `مقعد محجوز #${index + 1}` : `مقعد متاح #${index + 1}`}
-                      >
-                        {isFilled ? (
-                          <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                        ) : isNextSlot ? (
-                          <span className="text-[10px] font-black leading-none text-amber-900">مكانك هنا</span>
-                        ) : (
-                          <span className="text-xs font-bold text-slate-400">#{index + 1}</span>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Progress Summary Message */}
-              <div className="bg-emerald-50/60 p-3.5 rounded-xl border border-emerald-100 flex items-center gap-3">
-                <Clock className="w-5 h-5 text-emerald-600 flex-shrink-0" />
-                <div className="text-xs leading-relaxed">
-                  {remainingCount > 0 ? (
-                    <span className="text-slate-800 font-bold">
-                      🚀 يتبقى <strong className="text-emerald-700 font-black">{remainingCount} مقاعد</strong> فقط وتتقفل الكرتونة وتطير لباب بيتك فوراً!
-                    </span>
-                  ) : (
-                    <span className="text-emerald-700 font-bold">
-                      🎉 اكتملت الكرتونة بالكامل وجاري تجهيز الشحن السريع للمشترين!
-                    </span>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Shopping Guarantees (Egyptian Youth Tone) */}
+            {/* Shopping Guarantees */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div className="clean-card p-4 bg-white text-center space-y-1 border-slate-200">
                 <ShieldCheck className="w-6 h-6 text-emerald-600 mx-auto" />
                 <h4 className="text-xs font-black text-slate-800">عاين وافرز مع الكابتن</h4>
-                <p className="text-[11px] text-slate-500 font-medium">افتح العلبة واتأكد بنفسك، عجبك ادفع.. ما عجبكش ولا مليم</p>
+                <p className="text-[11px] text-slate-500 font-medium">افتح العلبة واتأكد بنفسك، عجبك ادفع كاش.. ما عجبكش ولا مليم</p>
               </div>
               <div className="clean-card p-4 bg-white text-center space-y-1 border-slate-200">
                 <Truck className="w-6 h-6 text-blue-600 mx-auto" />
@@ -311,7 +263,7 @@ export default function ProductPage() {
                   <h2 className="text-xl font-black text-slate-900">
                     احجز مقعدك في الكرتونة ⚡
                   </h2>
-                  <span className="text-[11px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-md">
+                  <span className="text-[11px] bg-emerald-100 text-emerald-800 font-black px-2.5 py-0.5 rounded-lg border border-emerald-200">
                     حجز فوري
                   </span>
                 </div>
@@ -354,7 +306,7 @@ export default function ProductPage() {
                         value={formData.customerFullName}
                         onChange={(e) => setFormData({ ...formData, customerFullName: e.target.value })}
                         placeholder="مثال: أحمد محمد علي"
-                        className="h-12 text-sm bg-slate-50/50"
+                        className="h-12 text-sm bg-slate-50/50 rounded-xl"
                       />
                     </div>
 
@@ -369,7 +321,7 @@ export default function ProductPage() {
                         value={formData.customerPhone}
                         onChange={(e) => setFormData({ ...formData, customerPhone: e.target.value })}
                         placeholder="01012345678"
-                        className="h-12 text-sm bg-slate-50/50"
+                        className="h-12 text-sm bg-slate-50/50 rounded-xl"
                       />
                     </div>
 
@@ -382,7 +334,7 @@ export default function ProductPage() {
                         value={formData.villageName}
                         onChange={(e) => setFormData({ ...formData, villageName: e.target.value })}
                         placeholder="اكتب عنوانك بالتفصيل لتوصيل الشحنة..."
-                        className="h-12 text-sm bg-slate-50/50"
+                        className="h-12 text-sm bg-slate-50/50 rounded-xl"
                         required
                       />
                     </div>
@@ -439,7 +391,7 @@ export default function ProductPage() {
                 {/* Submit Button */}
                 <Button
                   size="lg"
-                  className="w-full text-base font-black h-13 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-md active:scale-[0.99] transition-all mt-2"
+                  className="w-full text-base font-black h-13 rounded-2xl bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-lg shadow-emerald-600/25 active:scale-[0.99] transition-all mt-2"
                   onClick={handleSubmit}
                   disabled={!isFormValid || createOrderMutation.isPending}
                 >
@@ -461,8 +413,8 @@ export default function ProductPage() {
         </div>
       </div>
 
-      {/* Sticky Mobile Bottom Booking Bar (Only on Mobile) */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-4 py-2.5 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] flex items-center justify-between gap-3">
+      {/* Sticky Mobile Bottom Booking Bar (Native Shopping App Feel) */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200/90 px-4 py-2.5 shadow-[0_-4px_25px_rgba(0,0,0,0.1)] flex items-center justify-between gap-3">
         <div>
           <div className="flex items-center gap-1.5">
             <span className="text-xl font-black text-emerald-700 leading-none">
@@ -481,7 +433,7 @@ export default function ProductPage() {
 
         <Button
           size="sm"
-          className="bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs h-10 px-5 rounded-xl shadow-md active:scale-95 transition-all"
+          className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-black text-xs h-11 px-5 rounded-2xl shadow-md shadow-emerald-600/30 active:scale-95 transition-all"
           onClick={() => {
             const form = document.getElementById("booking-form");
             form?.scrollIntoView({ behavior: "smooth" });

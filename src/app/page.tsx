@@ -22,6 +22,7 @@ import {
 import Header from "@/components/Header";
 import ProductCard from "@/components/ProductCard";
 import Footer from "@/components/Footer";
+import SquadSavingsCalculator from "@/components/SquadSavingsCalculator";
 import { useActiveProducts } from "@/hooks/use-products";
 
 // Real Egyptian feedback testimonials
@@ -87,7 +88,7 @@ export default function Home() {
         <div className="max-w-4xl mx-auto text-center relative z-10">
           
           {/* Eyebrow Badge */}
-          <div className="inline-flex items-center gap-2 bg-emerald-100/80 text-emerald-800 border border-emerald-300/80 px-3.5 py-1.5 rounded-full text-xs font-black mb-5 shadow-xs">
+          <div className="inline-flex items-center gap-2 bg-emerald-100/80 text-emerald-800 border border-emerald-300/80 px-3.5 py-1.5 rounded-full text-xs font-black mb-5 shadow-sm">
             <Flame className="w-4 h-4 text-emerald-600" />
             <span>أول منصة شراء جماعي ذكية في مصر 🇪🇬</span>
           </div>
@@ -98,13 +99,31 @@ export default function Home() {
           </h1>
 
           {/* Subtitle */}
-          <p className="text-slate-600 text-sm sm:text-base md:text-lg font-medium max-w-2xl mx-auto mb-9 leading-relaxed">
+          <p className="text-slate-600 text-sm sm:text-base md:text-lg font-medium max-w-2xl mx-auto mb-7 leading-relaxed">
             مع سلاش.. وفّر فرق المحلات في جيبك. عاين طلبك وافرز حاجتك بنفسك مع الكابتن وادفع كاش على باب بيتك.
           </p>
 
+          {/* Action CTAs */}
+          <div className="flex flex-wrap items-center justify-center gap-3 mb-10">
+            <a
+              href="#products"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white font-black px-6 py-3.5 rounded-2xl shadow-lg hover:shadow-xl transition-all flex items-center gap-2 active:scale-95 text-sm sm:text-base"
+            >
+              <Package className="w-5 h-5" />
+              <span>تصفح كراتين اليوم المفتوحة ⚡</span>
+            </a>
+            <a
+              href="#referrals"
+              className="bg-white hover:bg-slate-50 text-slate-800 border border-slate-300 font-bold px-5 py-3.5 rounded-2xl shadow-sm transition-all flex items-center gap-2 text-sm sm:text-base hover:border-emerald-300"
+            >
+              <Users className="w-4 h-4 text-emerald-600" />
+              <span>حاسبة شلة الصحاب والتوفير 🤝</span>
+            </a>
+          </div>
+
           {/* Features Grid */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl mx-auto text-right">
-            <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center gap-3 hover:border-emerald-300 transition-colors">
+            <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3 hover:border-emerald-300 transition-colors">
               <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center flex-shrink-0">
                 <Package className="w-5 h-5" />
               </div>
@@ -114,7 +133,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center gap-3 hover:border-blue-300 transition-colors">
+            <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3 hover:border-blue-300 transition-colors">
               <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center flex-shrink-0">
                 <ShieldCheck className="w-5 h-5" />
               </div>
@@ -124,7 +143,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center gap-3 hover:border-emerald-300 transition-colors">
+            <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3 hover:border-emerald-300 transition-colors">
               <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center flex-shrink-0">
                 <Banknote className="w-5 h-5" />
               </div>
@@ -134,7 +153,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center gap-3 hover:border-amber-300 transition-colors">
+            <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3 hover:border-amber-300 transition-colors">
               <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center flex-shrink-0">
                 <Truck className="w-5 h-5" />
               </div>
@@ -166,7 +185,7 @@ export default function Home() {
               <ProductCard key={product.id} product={product} />
             ))
           ) : (
-            <div className="col-span-full text-center py-16 bg-white rounded-3xl border border-slate-200 shadow-xs p-6">
+            <div className="col-span-full text-center py-16 bg-white rounded-3xl border border-slate-200 shadow-sm p-6">
               <Package className="w-12 h-12 text-slate-300 mx-auto mb-3" />
               <p className="text-base font-bold text-slate-700 mb-1">
                 لا توجد كراتين مفتوحة للحجز حالياً
@@ -181,52 +200,10 @@ export default function Home() {
 
       {/* Referral Section (Youthful & Viral) */}
       <section id="referrals" className="py-14 px-4 max-w-5xl mx-auto">
-        <div className="bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 text-white p-6 sm:p-10 rounded-3xl overflow-hidden relative shadow-xl border border-slate-800">
-          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-            <div>
-              <div className="inline-flex items-center gap-2 bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 px-3 py-1 rounded-xl text-xs font-bold mb-4">
-                <Gift className="w-4 h-4 text-emerald-400" />
-                <span>برنامج شلة الصحاب والتوفير</span>
-              </div>
-              <h2 className="text-2xl sm:text-3xl font-black text-white mb-3 leading-snug">
-                جمّع الشلة وكسّروا السعر مع بعض! 🤝⚡
-              </h2>
-              <p className="text-slate-300 text-xs sm:text-sm leading-relaxed mb-6 font-normal">
-                بعد ما تحجز قطعتك، هيطلعلك لينك وكود خاص بيك شيره مع صحابك على الواتساب. كل صاحب ينضم ويحجز في نفس الكرتونة، هينزلك خصم فوري ومباشر على قطعتك، والشحنة هتقفل وتطير أسرع لباب بيتك!
-              </p>
-              <div className="flex flex-wrap gap-2 text-xs font-bold text-slate-200">
-                <span className="bg-white/10 px-3 py-1.5 rounded-xl border border-white/10 flex items-center gap-1">
-                  <span>💸</span> خصم مباشر لكل صاحب
-                </span>
-                <span className="bg-white/10 px-3 py-1.5 rounded-xl border border-white/10 flex items-center gap-1">
-                  <span>🚀</span> اكتمال أسرع للكرتونة
-                </span>
-              </div>
-            </div>
-
-            <div className="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 space-y-3">
-              <h3 className="text-sm font-black text-emerald-300 flex items-center gap-2">
-                <Users className="w-4 h-4" />
-                مستويات التوفير لشلة الصحاب:
-              </h3>
-
-              <div className="space-y-2.5 text-xs font-bold">
-                <div className="flex items-center justify-between bg-white/5 p-3 rounded-xl border border-white/5">
-                  <span className="text-slate-200">حجزك الفردي</span>
-                  <span className="text-slate-300">سعر الجملة الصافي ✅</span>
-                </div>
-                <div className="flex items-center justify-between bg-white/5 p-3 rounded-xl border border-emerald-400/30">
-                  <span className="text-slate-200">صاحب واحد اشترى معاك</span>
-                  <span className="text-emerald-300">خصم إضافي على قطعتك 💸</span>
-                </div>
-                <div className="flex items-center justify-between bg-emerald-500/20 p-3 rounded-xl border border-emerald-400/50">
-                  <span className="text-white">٣ صحاب اشتروا معاك</span>
-                  <span className="text-emerald-300 font-black">الحد الأقصى للتوفير 🔥</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <SquadSavingsCalculator
+          basePrice={products?.[0]?.wholesalePrice || 120}
+          minPrice={products?.[0]?.minDiscountPrice || 95}
+        />
       </section>
 
       {/* Customer Reviews Section */}
@@ -245,7 +222,7 @@ export default function Home() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {TESTIMONIALS.map((t, idx) => (
-            <div key={idx} className="bg-white border border-slate-200 rounded-2xl p-5 flex flex-col justify-between space-y-4 shadow-xs hover:shadow-md transition-shadow">
+            <div key={idx} className="bg-white border border-slate-200 rounded-2xl p-5 flex flex-col justify-between space-y-4 shadow-sm hover:shadow-md transition-shadow">
               <div>
                 <div className="flex items-center gap-1 text-amber-400 mb-3">
                   {[...Array(t.rating)].map((_, i) => (
@@ -292,7 +269,7 @@ export default function Home() {
             return (
               <div
                 key={idx}
-                className="bg-white border border-slate-200 rounded-2xl overflow-hidden transition-all shadow-xs"
+                className="bg-white border border-slate-200 rounded-2xl overflow-hidden transition-all shadow-sm"
               >
                 <button
                   onClick={() => setOpenFaq(isOpen ? null : idx)}
